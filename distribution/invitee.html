@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>我邀请的好友</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../css/watch.css"/>
+<link rel="stylesheet" type="text/css" href="../js/popup/css/popup.css" />
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template-native.js"></script> 
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/popup/Popup.js"></script>
+</head>
+<body class="bg">
+<script type="text/javascript">
+    var realName;
+
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load()
+    {
+        // 是否与实名绑定
+        var isRealName = true;
+
+        // 新来的
+        if(!isRealName)
+        {
+            location.replace("freshman.html");
+        }
+        // 老司机
+        else
+        {
+
+        }
+    }
+
+
+</script>
+
+  <div class="main bc-white">
+    <div class="ub uinn bd-b">
+      <div class="ub-img1 img-head" style="background-image:url(http://img5.dfhon.cn/imagefiles/userpic/180_53.jpg)"></div>
+      <div class="umar-l ub-f1">
+        <div class="">吴大维（ID:10983）</div>
+        <div class="umar-ts ub f-small c-gray">
+          <div class="umw-50">直接邀请：10人</div>
+          <div class="umw-50">间接邀请：90人</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ub uinn bd-b">
+      <div class="ub-img1 img-head" style="background-image:url(http://img5.dfhon.cn/imagefiles/userpic/180_53.jpg)"></div>
+      <div class="umar-l ub-f1">
+        <div class="">白晶晶（ID:10983）</div>
+        <div class="umar-ts ub f-small c-gray">
+          <div class="umw-50">直接邀请：10人</div>
+          <div class="umw-50">间接邀请：90人</div>
+        </div>
+      </div>
+    </div>   
+  </div>  
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

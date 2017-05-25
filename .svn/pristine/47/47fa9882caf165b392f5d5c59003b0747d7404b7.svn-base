@@ -1,0 +1,80 @@
+var account;
+var password;
+
+// 校验
+$("#close").on("click",function(){
+	$("#password").val('');
+});
+
+
+function validate()
+{
+    account = $("#account").val();
+    password = $("#password").val();
+
+    if (!validatePhoneNum(account)) {
+        $toast("请输入正确的手机号");
+        return false;
+    }  
+
+    if (password == "") {
+        $toast("请输入密码");
+        return false;
+    }
+
+    return true;
+}
+
+// 手机号码登录
+function signIn() 
+{
+    if(!validate())
+    {
+        return;
+    }
+
+    var msgPost = new Post_SignIn();
+
+    // MD5加密
+    password = password.MD5(16);
+    
+    var params = {
+        "account": account,
+        "password": password
+    };
+    
+    DataCenter.post(msgPost, params, cbSignIn);
+}
+
+// 手机号码登录回调函数
+function cbSignIn(result, machine)
+{
+    if (result) 
+    {
+        if (result.code == 0) {
+            // 几个字段，根据需要使用
+            var signInfo = result.data;
+
+            // 本地存储登录账号
+            var storage = window.localStorage;
+            saveLocalAccount(signInfo);
+			storage.setItem("moblie",account);
+
+            // backurl的处理
+			var backurl = getBackUrl();
+            if(backurl == null)
+            {
+                location.replace("/index.html");
+            }
+            else
+            {
+                removeBackUrl();
+                location.replace(backurl);
+            }
+        }
+        else
+        {
+            $toast(result.message);
+        }
+    }
+}

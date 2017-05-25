@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>美购记录</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link href="../css/common.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="../css/watch.css">
+<link rel="stylesheet" type="text/css" href="../css/style.css">
+<link rel="stylesheet" type="text/css" href="../js/scroll/css/myScroll.css">
+
+<script type="text/javascript" src="../js/zy_click.js"></script>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/PopWin_Order.js"></script>
+<script type="text/javascript" src="../js/base/Public_Trade.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+
+<script type="text/javascript" src="../js/dm/DM_MyTradeList.js"></script>
+<script type="text/javascript" src="../js/dm/POST_LastestTradeNo.js"></script>
+<script type="text/javascript" src="../js/dm/Post_CreateOrder.js"></script>
+<script type="text/javascript" src="../js/DateFormater.js"></script>
+
+<script type="text/javascript" src="../js/base/BounceList.js"></script>
+<script type="text/javascript" src="../js/scroll/QiScroll.js"></script>
+<script type="text/javascript" src="../js/iscroll-probe.js"></script>
+<script type="text/javascript" src="../js/Tocca.js"></script>
+</head>
+<body class="bg">
+<script type="text/javascript">
+    // tab切换功能注入
+    function tabFunc(){
+      $('#tab li').click(function(){
+        $(this).addClass('act').siblings().removeClass('act');
+        var num = $(this).index();
+        $('#tab_list li').eq(num).show().siblings().hide();
+        changeTab(num);            
+      });  
+    }
+
+
+    // 购买商品的tradeNo
+    var tradeNo;
+    // 购买商品名称
+    var commodityName;
+
+    var blMgr;
+
+    window.onload = function(){load();}
+
+    // 初始化加载数据
+    function load()
+    {
+      var userId = getUserId();
+
+      // 初始化弹动
+      blMgr = new BounceListMgr("main"); 
+      // 刷新第一个tab页
+      changeTab(0);
+
+      // ***放在这里才起作用***
+      tabFunc();            
+    }
+
+    // 切换tab
+    function changeTab(num)
+    {
+        if(num == 0)
+        {
+            showList("bclist_all");
+        }
+        else if(num == 1)
+        {
+            showList("bclist_trading", "trading");
+        }
+        else
+        {
+            //showList("list_calculate", "calculate");
+            showList("bclist_close", "close");
+        }
+    }
+
+    // 显示某个列表
+    function showList(showId, status)
+    {
+        var dm_MyTradeList = new DM_MyTradeList();
+        if(status)
+        {
+            var url = dm_MyTradeList.url;
+            url += "?status=" + status;
+            dm_MyTradeList.setUrl(url);
+        }
+
+        // 提取数据并更新
+        blMgr.init(showId, dm_MyTradeList);
+    }
+
+    //*****功能按钮******
+    // 追加购买
+    // 弹出购买窗口
+    function popOrder(tno, name, imgUrl, ecoupon, remain)
+    {
+        // 赋值
+        tradeNo = tno;
+        commodityName = name;
+
+        showPopWin_Order(order, imgUrl, ecoupon, remain);
+    }
+
+    function order()
+    {
+        // 获取输入数量
+        var count = $$("number").value;
+
+        createOrder(tradeNo, count);
+    }
+</script>
+
+    <div id="main" class="main">
+        <div class="watch_bottom1">
+            <ul id="tab">
+                <li class="act">全部</li>
+                <li style="width:32%">进行中</li>
+                <li style=" border:0;">已揭晓</li>
+            </ul>
+            <ul id="tab_list">
+                <li style="display:block;">
+                    <div id="bclist_all"></div>
+                </li>
+                <li>
+                    <div id="bclist_trading"></div>                    
+                </li>
+                <li>
+                    <div id="bclist_close"></div>           
+                </li>
+            </ul>
+        </div>
+    </div>
+    <script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

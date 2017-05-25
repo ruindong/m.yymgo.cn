@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>修改昵称</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link href="../css/common.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/watch.css">
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript" src="http://static.dfhon.cn/js/jquery.1.8.3.min.js"></script>
+
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+</head>
+<body style="background:#f4f4f4;">
+    
+    <div id="watch">
+        <div class='geren'>
+            <input type="text" id="userName" placeholder=''>
+        </div>
+		<p class="tishi">昵称不能超过8个字节</p>
+        <div class='baocun'>
+            <a class='bcxg' id="s" href="#">保存修改</a>
+        </div>
+		<div id="jg"></div>
+    </div>
+	<script>
+		 (function(){
+			var v=document.getElementById("userName");
+			var ts=document.getElementsByClassName("tishi")[0];
+			v.oninput=function(){
+				if(v.value.length>8){
+					ts.style.display="block";
+				}else{
+					ts.style.display="none";
+				}
+			}
+		 })();
+	</script>
+<script src="../js/user/setup.js"></script>
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>

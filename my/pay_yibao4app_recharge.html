@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>易宝充值</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/Public_Trade.js"></script>
+
+</head>
+<body class="bc-white">
+<script type="text/javascript">
+    var price;
+
+    // ***必须用window.onload，匿名函数
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+      // 获取请求参数
+      price = getQueryString("price");
+
+      var params = {
+          "price": price,
+          "payType": "yibao",
+          "user": getUserId(),
+          "req_token": getToken()
+      };
+
+      // 充值
+      payRecharge(params);
+    }
+</script>
+
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

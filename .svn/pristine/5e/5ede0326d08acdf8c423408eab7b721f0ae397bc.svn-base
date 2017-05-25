@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>查看卡密</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/dm/DM_MyWinnedTradeInfo.js"></script>
+<script type="text/javascript" src="../js/dm/DM_KMInfo.js"></script>
+
+<style type="text/css">
+.km-inner{   
+    display: inline-block;  
+    color: #272727;  
+    background-color: #fff;   
+    padding: .1rem 0.2rem;  
+    border: 1px dashed #e60012;  
+    -webkit-user-select:element;
+    width: 2rem;
+} 
+.unselect{
+    -webkit-user-select: none;  /* Chrome all / Safari all /opera15+*/  
+    -moz-user-select: none;     /* Firefox all */  
+    -ms-user-select: none;      /* IE 10+ */  
+    user-select: none;  
+}
+</style>
+</head>
+<body>
+<script type="text/javascript">
+    var tradeno;
+    var commname;
+
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+      // 获取请求参数
+      tradeno = getQueryString("tradeno");
+
+      if(tradeno == null)
+      {
+        $toast("参数丢失");
+        return;
+      }
+
+      // 加载中奖商品信息
+      loadWinnedTradeInfo(tradeno);
+
+      // 加载卡密信息
+      loadKMInfo(tradeno);
+    }
+
+    // -----加载中奖商品附加信息
+    function loadKMInfo(tradeno)
+    {
+      var dm_KMInfo = new DM_KMInfo();
+      var url = dm_KMInfo.url;
+      url += tradeno + ".json";
+
+      dm_KMInfo.setUrl(url);
+
+      // 提取数据并更新
+      DataCenter.getDataAnsyc("km_info", dm_KMInfo);
+    }
+
+    // -----加载中奖商品信息
+    function loadWinnedTradeInfo(tradeno)
+    {
+      var dm_tradeInfo = new DM_MyWinnedTradeInfo();
+      var url = dm_tradeInfo.url;
+      url += tradeno + ".json";
+
+      dm_tradeInfo.setUrl(url);
+
+      // 提取数据并更新
+      DataCenter.getDataAnsyc("trade_info", dm_tradeInfo, cbWinnedTradeInfo);      
+    }
+    function cbWinnedTradeInfo(response, showId, machine)
+    {
+      DataCenter.afterSuccess(response, showId, machine);
+      if(response && response.data)
+      {
+        commname = response.data.commodity.name;
+      }
+    }
+
+    // 查看卡密
+    function queryKM()
+    {
+        var txt = $('#showIt').html();
+
+        if(txt == "查看")
+        {
+            $("#div_km").removeClass("uhide");
+            $('#showIt').html("收起");
+        }
+        else
+        {
+            $("#div_km").addClass("uhide");
+            $('#showIt').html("查看");
+        }
+    }
+
+    // 兑换
+    function exchange(kmtypeId, key, value, openId)
+    {
+        var userId = getUserId();
+        var url = url_card + "api/redirect.html?kmtype_id=" + kmtypeId + "&com_key=" + key + "&com_value=" + value + "&user_id=" + userId + "&tradeno=" + tradeno + "&commname=" + commname + "&isAndroid=" + isAndroid + "&open_id=" + openId;
+        location.replace(url);
+    }
+</script>
+
+<div class="main">
+    <div id="trade_info"></div>
+    <div id="km_info" class="umar-t uinn bc-white"></div>
+</div>
+
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

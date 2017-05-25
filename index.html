@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<title>东方虹美购</title>
+<link rel="stylesheet" type="text/css" href="css/common.css">
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="js/scroll/css/myScroll.css">
+<link rel="stylesheet" type="text/css" href="js/swiper/css/swiper.css">
+
+<script type="text/javascript" src="js/zy_Click.js"></script>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/swiper/swiper.jquery.min.js"></script>
+
+<script type="text/javascript" src="js/template.js"></script> 
+<script type="text/javascript" src="js/base/Main.js"></script>
+<script type="text/javascript" src="js/base/Public_Trade.js"></script>
+<script type="text/javascript" src="js/base/PopWin_Order.js"></script>
+<script type="text/javascript" src="js/base/DataCenter.js"></script>
+<script type="text/javascript" src="js/base/JsonEx.js"></script>
+<script type="text/javascript" src="js/base/MessageMachine.js"></script>
+
+<script type="text/javascript" src="js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript" src="js/dm/DM_Index_Slider.js"></script>
+<script type="text/javascript" src="js/dm/DM_Index_CommoList.js"></script>
+<script type="text/javascript" src="js/dm/Post_CreateOrder.js"></script>
+<script type="text/javascript" src="js/base/FilterFunction.js"></script>
+
+<script type="text/javascript" src="js/base/BounceList.js"></script>
+<script type="text/javascript" src="js/scroll/QiScroll.js"></script>
+<script type="text/javascript" src="js/iscroll-probe.js"></script>
+</head>
+
+<body>
+<script type="text/javascript">
+    // 购买商品的tradeNo
+    var tradeNo;
+    // 购买商品名称
+    var commodityName;
+    // 购买次数
+    var count;
+    // 弹动列表
+    var blMgr;
+
+    window.onload = function(){load()}; 
+
+    // 初始化加载数据
+    function load(){
+      // 此处先初始化，slider事件需依赖
+      blMgr = new BounceListMgr("main");
+
+      // 加载头部广告数据
+      loadAds();
+
+      // 加载商品列表数据
+      loadShopList();
+
+      // 记录渠道Id
+      recordChannelId();
+
+      // 记录推荐人Id
+      recordReferee();
+    }
+
+    // 加载头部广告
+    function loadAds()
+    {
+      var dm_Index_Slider = new DM_Index_Slider();
+      DataCenter.getDataAnsyc("index_slider", dm_Index_Slider, cbSlider);      
+    }
+    // Slider回调函数
+    function cbSlider(response, showId, machine)
+    {
+      var data = response.data;
+      if(data)
+      {
+        // 加套了一层壳，方便处理
+        response.data = new Object();
+        response.data.slider = data;
+
+        DataCenter.afterSuccess(response, showId, machine);
+
+        // 轮播效果
+        var swiper = new Swiper('.swiper-container', {
+            pagination: '.swiper-pagination',
+            paginationClickable: true,
+            centeredSlides: true,
+            autoplay: 5000,
+            autoplayDisableOnInteraction: false
+        });      
+      }
+    }
+
+
+    // 加载商品列表
+    function loadShopList()
+    {
+      var dm_Index_ShopList = new DM_Index_ShopList();
+
+      // 弹动处理
+      blMgr.init("bclist_comm", dm_Index_ShopList);
+    }
+
+
+    // ****功能函数***
+    // 弹出购买窗口
+    function popOrder(tno, name, imgUrl, ecoupon, remain)
+    {
+        // 赋值
+        tradeNo = tno;
+        commodityName = name;
+
+        showPopWin_Order(order, imgUrl, ecoupon, remain);
+    }
+
+    // 下单
+    function order()
+    {
+        // 获取输入数量
+        count = $$("number").value;
+        createOrder(tradeNo, count);
+    }
+	
+</script> 
+<div id="main" class="main">
+    <div id="index_slider" class="top-banner"></div>
+    <ul id="bclist_comm" class='baby_list'></ul> 
+</div>
+</body>
+
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+
+</html>

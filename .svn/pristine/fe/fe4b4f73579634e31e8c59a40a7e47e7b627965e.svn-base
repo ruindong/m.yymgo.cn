@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>领取美购币奖励</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    var openId;
+
+    // ***必须用window.onload，匿名函数
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+      openid = getQueryString("openid");     
+      if(!openid)
+      {
+        $toast("缺少openid");
+        return;
+      } 
+
+      getDrawByCount(openid);
+    }
+
+    function getDrawByCount()
+    {
+      var url = url_dfhapi + "v3/HD5.json?action=GetDrawByCount&openId=" + openid;
+      _ajax(url, cbGetDrawByCount);
+    }
+    function cbGetDrawByCount(response)
+    {
+      // 参与过
+      if(response.Success)
+      {
+        var userId = getUserId();
+        if(userId)
+        {
+          getByRecharge(openId, userId);
+        }
+      }
+      else if(response.ErrCode == 40005)
+      {
+        $("#draw").removeClass("uhide");
+      }
+      else
+      {
+        $toast(response.Msg);
+      }
+    }
+
+    // GetRecharge
+    function getByRecharge(openId, userId)
+    {
+      var url = "v3/HD5.json?action=GetByRecharge&openId=" + openId + "&userId=" + userId;
+      _ajax(url, cbGetByRecharge);
+    }
+    function cbGetByRecharge(response)
+    {
+      if(response.Success)
+      {
+        $("#info").removeClass("uhide");
+        $("#msg").html("恭喜您，领取美购币成功！");
+      }
+      else if(response.ErrCode == 40005)
+      {
+        $("#info").removeClass("uhide");
+        $("#msg").html("您已经领取过美购币了！");
+      }
+      else
+      {
+        $toast(response.Msg);
+      }
+    }
+
+    function _ajax(url, afterSuccess)
+    {
+      jQuery.ajax({
+          contentType: "application/x-www-form-urlencoded; charset=utf-8",
+          type: 'GET',
+          url: url,
+          //data: params,
+          dataType: "json",
+          timeout: 5000,
+          success: function(response){
+            if(afterSuccess)
+            {
+              afterSuccess(response);
+            }
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown){
+              $toast("Error:" + textStatus);
+          }
+      })
+    }
+</script>
+
+<div class="main uinn bc-white uhide" id="info">
+    <div id="msg" class="umar-t c-center f-big c-important"></div>
+    <div class="umar-tb ub ub-pc">
+      <div class="btn-red-2" onclick="location.replace(\'/my/my.html\');">查看明细</div>
+      <div class="umar-l btn-red-2" onclick="location.replace(\'/index.html\');">立即使用</div>
+    </div>
+</div>  
+
+<div class="main uinn bc-white uhide" id="draw">
+    <div id="msg" class="umar-t c-center f-big c-important">您还没有参与过摇奖！</div>
+    <div class="umar-tb ub ub-pc">
+      <div class="btn-red-2" onclick="location.replace(\'/my/my.html\');">现在去摇奖</div>
+      <div class="umar-l btn-red-2" onclick="location.replace(\'/index.html\');">去美购逛逛</div>
+    </div>
+</div> 
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

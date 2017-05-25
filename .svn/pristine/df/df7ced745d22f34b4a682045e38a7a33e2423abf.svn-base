@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>晒单详情</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link href="../css/common.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/style.css">
+
+<script type="text/javascript" src="../js/DateFormater.js"></script>
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template-native.js"></script> 
+<script type="text/javascript" src="../js/template.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/Public_Trade.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+
+<script type="text/javascript" src="../js/dm/DM_ShareInfo.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    var shareId;
+
+    $(window).load = load(); 
+
+    // 初始化加载数据
+    function load(){
+      // 获取请求参数
+      shareId = getQueryString("shareId");
+
+      if(shareId == null)
+      {
+        $toast("参数丢失");
+        return;
+      }
+
+      // 加载晒单记录
+      var dm_ShareInfo = new DM_ShareInfo();
+      var url = dm_ShareInfo.url;
+      url += shareId + ".json";
+      url += "?shareId=" + shareId;
+
+      dm_ShareInfo.setUrl(url);
+
+      // 提取数据更新至shoplist
+      DataCenter.getDataAnsyc("shareinfo", dm_ShareInfo);      
+    }
+</script>   
+  <div class="main">
+      <div id="shareinfo" class="bc-white uinn">
+      </div>
+  </div>
+
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>

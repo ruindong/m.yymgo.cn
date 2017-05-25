@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>充值</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link href="../css/common.css" type="text/css" rel="stylesheet" />
+<link href="../css/style.css" type="text/css" rel="stylesheet">
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/template.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/Public_Trade.js"></script>
+<script type="text/javascript" src="../js/dm/DM_PayTypeList.js"></script>
+</head>
+
+<body class="bg">
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.xz_cz_area li').click(function(){
+      $(this).addClass('border_red').siblings().removeClass('border_red');
+
+      if($(this).attr("id") == "qtje")
+      {
+        price = "";
+      }
+      else
+      {
+        price = $(this).text();        
+      }
+
+      $$("price-other").innerHTML = "￥" + price;
+  });
+
+  $('#input_price').bind('input propertychange', function() {
+      price = $$("input_price").value;
+      $$("price-other").innerHTML = "￥" + price;
+  });     
+});
+</script>
+
+<script type="text/javascript">
+    var price = 20;  // 缺省值
+    var payType;
+
+    // ****此处必须用window.onload，且必须用匿名方法
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+      // 支付方式
+      loadPayType();
+    }
+ 
+    // 支付方式
+    function loadPayType()
+    {
+      var dm_paytype = new DM_PayTypeList();
+      DataCenter.getDataAnsyc("paytype_list", dm_paytype, cbPayType);      
+    }
+    function cbPayType(response, showId, machine)
+    {
+      DataCenter.afterSuccess(response, showId, machine);
+
+      // 非微信环境，删除微信支付
+      if(!isWeixin)
+      {
+        $("#weixin").remove();
+      }
+      else
+      {
+        $("#alipay").remove();        
+      } 
+
+      // 第一种三方支付方式
+      var payId = $("#paytype_list >div").first().attr("id");
+      changeTab(payId);           
+    }
+
+    // 充值
+    function recharge()
+    {
+      var numPrice = Number(price);
+      if(isNaN(numPrice) || !isInteger(numPrice) || (numPrice < 1) || (numPrice > 2000))
+      {
+        $toast("请选择正确的充值金额（1-2,000）先！");
+        return;
+      }
+
+      var params = {
+          "price": numPrice,
+          "payType": payType,
+          "user": getUserId(),
+          "req_token": getToken()
+      };
+
+      // 充值
+      payRecharge(params);
+    }
+
+    // tab切换
+    function changeTab(id)
+    {
+      payType = id;
+      $(".cur").removeClass("cur");
+      $("#" + id).addClass("cur");
+    }      
+
+    function isInteger(obj) {
+      return (obj | 0) === obj;
+    }
+
+	$(function(){
+		$("#numberSize").click(function(e){
+			var e=e.target;
+			if(e.id!=("input_price")){
+				document.getElementById("input_price").value="";
+			}
+		});
+	});
+  </script>  
+
+  <div class="main">
+      <div class="cz_jb">充值购买东方虹医美在线咨询服务(1元/分钟)，赠送等额美购币。</div>
+      <div class="xz_cz">
+        <h2>选择充值金额</h2>
+        <ul id="numberSize" class='xz_cz_area'>
+          <li class='border_red'>20</li>
+          <li>50</li>
+          <li>100</li>
+          <li>200</li>
+          <li>500</li>
+          <li id="qtje" class='qtje'><input id="input_price" type="number" placeholder='其他金额'></li>
+        </ul>
+      </div>
+
+      <div class="bd umar-t bc-white choose">
+        <div class="uinn-t uinn-l">
+          <div class="bd-b f-small ub ub-fh">          
+            <div class="ub ub-f1">支付方式</div>
+            <div id="price-other" class="c-important uinn-r">￥20</div>
+          </div>  
+        </div>
+        <div id="paytype_list" class="uinn paylist"></div>
+      </div>  
+  </div>
+
+  <div id="index-foot" class="banner-bottom">
+      <div class="btn-red-b" onclick="recharge();">立即充值</div>
+  </div>   
+
+  <script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

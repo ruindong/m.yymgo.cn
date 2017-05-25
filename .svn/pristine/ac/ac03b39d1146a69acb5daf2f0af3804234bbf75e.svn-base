@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>设置</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<link href="../css/common.css" type="text/css" rel="stylesheet" />
+<link href="../css/style.css" type="text/css" rel="stylesheet">
+<link href="../css/style_3.css" type="text/css" rel="stylesheet">
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    // ****此处必须用window.onload，且必须用匿名方法
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+    	// 绑定手机状态设置
+    	setBindStatus();
+
+		// 回退时需要刷新
+		goBackRefresh(function(){
+			// 重新加载
+			setBindStatus();
+		});  	
+	}
+
+	// 更新绑定状态
+	function setBindStatus()
+	{
+		var mobile = getMobile();
+		if(mobile)
+		{
+			$("#bind_status").html("已绑定");
+		}
+		else
+		{
+			$("#bind_status").html("未绑定");		
+		}
+	} 
+
+	// 绑定手机号码
+	function bindMobile()
+	{
+		if(getMobile())
+		{
+			return;
+		}
+
+		openWindow("bind_mobile.html");
+	}
+
+	// 退出
+	function signOut()
+	{
+		var localStorage = window.localStorage;
+		localStorage.clear();
+
+		login();
+	}
+</script>
+  <div class="main">
+    <div class="uinn bc-white">	
+      <div class="umar-t uinn ub ub-ac bc-white bd-b f-big" id="update_pwd" onclick="openWindow('address.html')">
+        <div class="ub-f1">管理收货地址</div>
+        <div class="ub-img img-icon1" style="background-image:url('../image/jiantou.png')"></div>       
+      </div> 
+      <div class="umar-t uinn ub ub-ac bc-white bd-b f-big" id="update_pwd" onclick="bindMobile()">
+        <div class="ub-f1">手机号码</div>
+        <div class="c-gray" id="bind_status"></div>       
+      </div>       
+      <div class="umar-t uinn ub ub-ac bc-white f-big" id="update_pwd" onclick="openWindow('paypw.html')">
+        <div class="ub-f1">支付管理</div>
+        <div class="ub-img img-icon1" style="background-image:url('../image/jiantou.png')"></div> 
+      </div>
+    </div>  
+
+    <div class='mmCZ' onclick='signOut()'>退出登录</div>	
+  </div>
+
+
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

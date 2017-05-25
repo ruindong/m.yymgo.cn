@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>选择地址</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../js/scroll/css/myScroll.css"/>
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/template.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/dm/DM_AddressSelect.js"></script>
+
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript" src="../js/dm/Post_UpdateTradeAddress.js"></script>
+
+<script type="text/javascript" src="../js/base/BounceList.js"></script>
+<script type="text/javascript" src="../js/scroll/QiScroll.js"></script>
+<script type="text/javascript" src="../js/iscroll-probe.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    function initSelected(){
+      $('#address_list').bind('DOMNodeInserted', bind_address); 
+    }
+    function bind_address()
+    {
+      // 清除
+      $('.adr').unbind('click');
+
+      // 重新绑定
+      $('.adr').bind('click', function(){
+        $('.adr').removeClass('cur');
+        $(this).addClass('cur');
+        addressId = $(this).attr("id");
+      });
+    }
+</script>
+
+<script type="text/javascript">
+    var tradeno;
+    var addressId;
+
+    var blMgr;
+
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+      // 获取请求参数
+      tradeno = getQueryString("tradeno");
+
+      if(tradeno == null)
+      {
+        $toast("参数丢失");
+        return;
+      }
+
+      // 加载地址信息
+      loadAddressList();
+
+      // 必须在这里设置
+      initSelected();   
+
+      // 回退时需要刷新
+      goBackRefresh(function(){
+        // 重新加载地址信息
+        blMgr.pullDown();
+      });       
+    }
+
+    // -----加载地址信息
+    function loadAddressList()
+    {
+      var dm_AddressSelect = new DM_AddressSelect();
+
+      // 提取数据并更新
+      blMgr = new BounceListMgr("scroll_zone");         
+      blMgr.init("address_list", dm_AddressSelect);
+    }
+
+    // ************功能按钮**************
+    function selectAddress()
+    {
+      if(!addressId || addressId === undefined)
+      {
+        $toast("请先选择地址！");
+        return;
+      }
+
+      var postMsg = new Post_UpdateTradeAddress();
+
+      var params = {
+          "tradeno": tradeno,
+          "addressId": addressId
+      };
+
+      // 更新地址
+      DataCenter.post(postMsg, params, cbUpdateTradeAddress);
+    }
+    function cbUpdateTradeAddress(result, machine)
+    {
+        if (result) 
+        {
+            if (result.code == 0) {
+                goBack();
+            }
+            else
+            {
+                $toast(result.message);
+            }
+        }
+    } 
+</script>
+<div class="main">
+  <div id="scroll_zone">
+    <div id="address_list" class="choose"></div>
+    <div class="umar-tb"></div>
+  </div> 
+</div>    
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+<footer>
+  <div id="index-foot" class='banner-bottom2 ub'>
+      <div class="ub-f1 btn1" ontouchstart="dfh_touch()" onclick="openWindow('address_add.html');">添加地址</div>
+      <div class="ub-f2 btn2" ontouchstart="dfh_touch()" onclick="selectAddress();">确定</div>
+  </div>
+  <script type="text/javascript" src="/frame/footer.js"></script>
+</footer>
+</html>

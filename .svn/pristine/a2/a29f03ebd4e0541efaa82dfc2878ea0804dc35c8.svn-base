@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>查看卡密</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/dm/DM_MyWinnedTradeInfo.js"></script>
+<script type="text/javascript" src="../js/dm/DM_MyWinnedAttr.js"></script>
+
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    var tradeno;
+
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+      // 获取请求参数
+      tradeno = getQueryString("tradeno");
+
+      if(tradeno == null)
+      {
+        $toast("参数丢失");
+        return;
+      }
+
+      // 加载中奖商品信息
+      loadWinnedTradeInfo(tradeno);
+
+      // 加载中奖商品附加信息
+      loadWinnedAttr(tradeno);
+    }
+
+    // -----加载中奖商品附加信息
+    function loadWinnedAttr(tradeno)
+    {
+      var dm_MyWinnedAttr = new DM_MyWinnedAttr();
+      var url = dm_MyWinnedAttr.url;
+      url += tradeno + ".json";
+
+      dm_MyWinnedAttr.setUrl(url);
+
+      // 提取数据并更新
+      DataCenter.getDataAnsyc("none", dm_MyWinnedAttr, cbWinnedAttr);
+    }
+    function cbWinnedAttr(response, showId, machine)
+    {
+      var data = response.data;
+      if(data)
+      {
+        key = data.key;
+        value = data.value;
+
+        if(key == null)
+        {
+          $toast("卡号暂未生成，请返回稍候再试！");
+        }
+
+        // 卡密数据回填
+        alert("卡密需要加密");
+        $("#km_key").html(key);
+        if(value != null)
+        {
+          // 没有密码，则整行不显示        
+          $("#line_mm").removeClass("uhide");      
+          $("#km_value").html(value);
+        }
+      }
+    }   
+
+    // -----加载中奖商品信息
+    function loadWinnedTradeInfo(tradeno)
+    {
+      var dm_tradeInfo = new DM_MyWinnedTradeInfo();
+      var url = dm_tradeInfo.url;
+      url += tradeno + ".json";
+
+      dm_tradeInfo.setUrl(url);
+
+      // 提取数据并更新
+      DataCenter.getDataAnsyc("trade_info", dm_tradeInfo);
+    }
+</script>
+
+<div class="main">
+    <div id="trade_info"></div>
+
+    <div class="umar-t uinn bc-white">
+        <div class="ub ub-fh">
+            <div class="ub-f1">长按卡号、密码可复制</div>
+            <div id="showIt" class="c-link">查看</div>
+        </div>    
+        <div id="div_km" class='uinn bc-gray bd uhide'>
+            <p>卡号：<em id="km_key" class="umar-l f-big"></em></p>
+            <p id="line_mm" class="umar-t">密码：<em id="km_value" class="umar-l f-big"></em></p>
+        </div>
+        <div class="umar-t uinn-t c-gray f-small bd-t">
+            <p>提示：获得卡号密码后请尽快使用</p>
+            <p>请不要将卡密截图进行晒单分享，避免被他人使用</p>
+        </div>
+    </div>
+</div>
+    
+ <script>
+$(function(){
+  // 展开收起
+  $("#showIt").on("click",function(){
+        var txt = $('#showIt').html();
+
+        if(txt == "查看")
+        {
+            $("#div_km").removeClass("uhide");
+            $('#showIt').html("收起");
+        }
+        else
+        {
+            $("#div_km").addClass("uhide");
+            $('#showIt').html("查看");            
+        }
+    })
+});
+</script>   
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>

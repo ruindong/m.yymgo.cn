@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>在线支付</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+<link rel="stylesheet" type="text/css" href="../css/common.css">
+<link rel="stylesheet" type="text/css" href="../css/style.css">
+<link rel="stylesheet" type="text/css" href="../js/password/css/PasswordForge.css" />
+
+<script type="text/javascript" src="../js/md5.js"></script>
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/Public_Trade.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript" src="../js/dm/Post_PayPwd_Confirm.js"></script>
+
+<script type="text/javascript" src="../js/password/PasswordForge.js"></script>
+
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+</head>
+<body onselectstart="return false" class="bg">
+<script type="text/javascript">
+    var orderInfo;
+    var payType;
+
+    // 禁止右键
+    function stop(){
+        return false;
+    }
+    document.oncontextmenu=stop;
+   
+    // ****此处必须用window.onload，且必须用匿名方法
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+      // 获取订单参数
+      orderInfo = getOrderInfo();
+
+      if((orderInfo.orderId == null) || (orderInfo.totalPrice == null))
+      {
+        $toast("参数丢失，请返回");
+        return;
+      }
+
+      // 更新页面数据
+      $("#commName").html(orderInfo.commName);      
+      $("#tradeNo").html(orderInfo.tradeNo);           
+      $("#totalPrice").html(orderInfo.totalPrice);
+      $("#price-ecoupon").html("￥" + orderInfo.totalPrice);      
+      $("#price-other").html("￥" + orderInfo.totalPrice);         
+
+      // 支付方式
+      showPayType();
+
+      // 处理账户余额问题
+      showMyEcoupon();
+    }
+ 
+    // 账户余额处理
+    function showMyEcoupon()
+    { 
+        $("#ecoupon1").html(orderInfo.myEcoupon);
+        $("#ecoupon2").html(orderInfo.myEcoupon);  
+
+        // 余额是否足够
+        if(orderInfo.myEcoupon >= orderInfo.totalPrice)
+        {
+          $("#ec_enough").removeClass("uhide");
+          $("#ec_notenough").addClass("uhide");
+
+          // 缺省为余额支付
+          changeTab("ec_enough");
+        }
+        else
+        {
+          $("#ec_notenough").removeClass("uhide");
+          $("#ec_enough").addClass("uhide");       
+        }
+    }
+
+    // 支付方式
+    function showPayType()
+    {
+      // WeiXin用微信支付，其他用alipay支付
+      if(isWeixin)
+      {
+          $("#paytype_weixin").removeClass("uhide");
+          $("#paytype_alipay").addClass("uhide");
+
+          payType = "weixin";
+      }
+      else
+      {
+          $("#paytype_alipay").removeClass("uhide");
+          $("#paytype_weixin").addClass("uhide");
+
+          payType = "alipay"; 
+      }
+    }
+
+    // 支付
+    function pay()
+    {
+      if(payType == "ecoupon")
+      {
+        // 是否开启支付密码
+        if(orderInfo.payPwdStatus == "on")
+        {
+          PasswordForge.verifyPassword(confirmPayPwd);
+        }
+        else
+        {
+          $('#btn_pay').attr("disabled", true).html("正在提交...");          
+          payOrderByCoupon(orderInfo.orderId);
+        }  
+      }
+      else
+      {
+        var params = {
+          "orderId": orderInfo.orderId,
+          "payType": payType,
+          "user": getUserId(),            
+          "req_token": getToken()
+        };
+
+        $('#btn_pay').attr("disabled", true).html("正在提交...");     
+        // 支付，后续等待回调/notify/pay_result.html
+        payOrder(params);
+      }
+    }
+
+    // 确认支付密码
+    function confirmPayPwd(password)
+    {
+        // MD5加密
+      password = password.MD5(16);      
+      var machine = new Post_PayPwd_Confirm();
+      var params = {"payPassword": password};
+
+      DataCenter.post(machine, params, cbConfirmPayPwd);
+    }
+    function cbConfirmPayPwd(result, machine)
+    {
+      if(result.code==0 )
+      {  
+        var data = result.data;
+
+        // 正确
+        if(data.isRight == "true")
+        {
+          $('#btn_pay').attr("disabled", true).html("正在提交...");              
+          payOrderByCoupon(orderInfo.orderId);
+        }
+        else
+        {
+          // 再来一次
+          PasswordForge.verifyPassword(confirmPayPwd, "支付密码错误");
+        }
+      }
+    }
+
+
+    // tab切换
+    function changeTab(id)
+    {
+      $(".cur").removeClass("cur");
+      $('#' + id).addClass("cur");
+
+      // 支付方式
+      if(id == "paytype_weixin")
+      {
+        payType = "weixin";
+        $('#price-ecoupon').addClass("uhide");                
+        $('#price-other').removeClass("uhide");            
+      }
+      else if(id == "paytype_alipay")
+      {
+        payType = "alipay";
+        $('#price-ecoupon').addClass("uhide");     
+        $('#price-other').removeClass("uhide");             
+      }
+      else
+      {
+        payType = "ecoupon";
+        $('#price-other').addClass("uhide");                
+        $('#price-ecoupon').removeClass("uhide");   
+      }
+    }
+</script>        
+
+  <div class="main">
+      <div class='uinn bd bc-white'>
+        <div>
+          <h2 id="commName"></h2>
+          <div class='umar-t c-gray'>期号：<em id="tradeNo"></em></div>
+        </div>
+        <div class="bd-b umar-b umar-t"></div>  
+        <div class="ub ub-fh f-big">
+          <div class="ub ub-f1">支付金额：</div>
+          <div class="c-important">￥<em id="totalPrice"></em></div>
+        </div>  
+      </div>
+
+      <div class="bd umar-t bc-white choose">
+        <div class="uinn-t uinn-l">
+          <div class="bd-b f-small ub ub-fh">          
+            <div class="ub ub-f1">美购币余额支付</div>
+            <div id="price-ecoupon" class="c-important uhide uinn-r"></div>
+          </div>  
+        </div>
+        <div id="ec_notenough" class="bc-dark uhide" onclick="changeTab(id);">
+          <div class="uinn">
+            <div class="ub ub-fh ub-ac">  
+              <div class="img-wallet umwh-1"></div>
+              <div class="ub-f1 umar-l">
+                <div class="f-big">账户余额</div>
+                <div class="f-small c-gray">可用金额￥<em id="ecoupon1"></em></div>
+              </div>
+              <div>余额不足</div>
+            </div> 
+          </div>
+        </div>
+        <div id="ec_enough" class="uhide" onclick="changeTab(id);">
+          <div class="uinn">
+            <div class="ub ub-fh ub-ac">
+              <div class="img-wallet umwh-1"></div>
+              <div class="ub-f1 umar-l">
+                <div class="f-big2">账户余额</div>
+                <div class="f-small c-gray">可用金额￥<em id="ecoupon2"></em></div>
+              </div>
+              <div class="cbximg umwh"></div>
+            </div> 
+          </div>
+        </div>
+      </div>        
+
+      <div class="bd umar-t bc-white choose">
+        <div class="uinn-t uinn-l">
+          <div class="bd-b f-small ub ub-fh">          
+            <div class="ub ub-f1">还需支付</div>
+            <div id="price-other" class="c-important uinn-r"></div>
+          </div>  
+        </div>
+        <div id="paytype_alipay" class="uinn cur uhide" onclick="changeTab(id);">
+          <div class="ub ub-fh ub-ac">
+            <div class="img-alipay umwh-1"></div>
+            <div class="ub-f1 umar-l f-big2">支付宝</div>
+            <div class="cbximg umwh"></div>
+          </div>
+        </div>
+        <div id="paytype_weixin" class="uinn cur" onclick="changeTab(id);">
+          <div class="ub ub-fh ub-ac">
+            <div class="img-weixin umwh-1"></div>
+            <div class="ub-f1 umar-l f-big2">微信支付</div>
+            <div class="cbximg umwh"></div>
+          </div>
+        </div>
+        <div class="umar-t f-small c-gray uinn bd-t">温馨提示：购买东方虹医美在线咨询服务（1元/分钟），可获得等额的美购币。本系统不提供直接购买美购币服务。</div>
+      </div> 
+
+      <div class="uinn umar-tb">参与1圆美购，表示同意<a class="c-link" href="/login/fwxy.html">1圆美购用户协议</a></div>
+      
+      <div class='banner-bottom'><button id="btn_pay" class="btn-red-b" onclick="pay();">确认支付</button></div>
+  </div>
+  
+  <script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>
+
+           

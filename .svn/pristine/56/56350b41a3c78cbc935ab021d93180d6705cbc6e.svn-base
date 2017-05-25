@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>修改昵称</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style_3.css"/>
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript" src="../js/dm/Post_UpdateNickname.js"></script>
+
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+</head>
+<body>
+<script>
+    var nickName;
+
+    // 修改昵称
+    function updateNickname()
+    {
+      if(!isValidate())
+      {
+          return;
+      }
+
+      var machine = new Post_UpdateNickname();
+      var parms={
+        nickName: nickName
+      }
+
+      DataCenter.post(machine, parms, cbUpdateNickname)
+    }
+
+    // 回调函数
+    function cbUpdateNickname(result, machine)
+    {
+      if(result)
+      {
+        if(result.code == 0)
+        {
+          $toast("修改成功！");
+
+          window.setTimeout(function(){
+            goBack();
+          }, 1000);           
+        }
+        else
+        {
+          $toast(result.message);
+        }
+      }
+    }
+
+    // 合法性检查
+    function isValidate()
+    {
+    	nickName = $.trim($("#nick_name").val());
+    	if(nickName.length == 0)
+    	{
+    		return false;
+    	}
+
+    	return true;
+    }
+</script>
+
+    
+    <div class="main bc-white">
+		<div class="uinn">
+		    <input type="text" class="dlSJ" maxlength="8" id="nick_name" placeholder='昵称'>	    
+		</div>
+		<div class="uinn umar-t">
+		    <div id="btn_save" class="uinn umar-t btn-red-b" ontouchstart="dfh_touch()" onclick="updateNickname();">保存</div>	
+		</div>    		
+    </div>
+
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+<title>帮助与反馈</title>
+<link  type="text/css" rel="stylesheet" href="../css/common.css" />
+<link  type="text/css" rel="stylesheet" href="../css/style.css" />
+<link  type="text/css" rel="stylesheet" href="../css/style_3.css" />
+
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+
+<script type="text/javascript">
+//菜单隐藏展开
+$(function(){
+    //菜单隐藏展开
+    var tabs_i=0
+    $('.vtitle').click(function(){
+        var _self = $(this);
+        var j = $('.vtitle').index(_self);
+        if( tabs_i == j ) return false; tabs_i = j;
+        $('.vtitle .v').each(function(e){
+            if(e==tabs_i){
+                $('.v',_self).removeClass('v01').addClass('v02');
+            }else{
+                $(this).removeClass('v02').addClass('v01');
+            }
+        });
+        $('.vcon').slideUp().eq(tabs_i).slideDown();
+    });
+})
+</script>
+</head>
+<body>
+<div class="main bc-white">
+ <div class="uinn">	
+  <div class="vcontent">	
+	<div class="vtitle ub ub-ac">
+		<div class="vtext ub-f1">什么是东方虹美购？</div>
+		<div class="v v02"></div>		
+	</div>
+	<div class="vcon">
+		<ul class="vconlist clearfix">		
+			<li>“东方虹美购”是由“东方虹APP”提供的在线积分商城，仅为东方虹会员提供的增值服务。</li>
+			<li>“东方虹美购”仅支持东方虹会员使用美购币参与，不支持现金交易！东方虹会员每购买1分钟东方虹医美在线咨询服务，可获得1美购币。</li>
+		</ul>
+	</div>	
+  </div>
+
+  <div class="vcontent">	  	
+	<div class="vtitle ub ub-ac">
+		<div class="vtext ub-f1">如何参与东方虹美购？</div>
+		<div class="v"></div>		
+	</div>	
+	<div class="vcon" style="display: none;">
+		<ul class="vconlist clearfix">
+			<li class="select">登录东方虹美购</li>
+			<li>A. 选择喜欢的商品，选择要参与的人次并支付。</li>
+			<li>B. 每人次最低花费1美购币，即可获得1个美购码。</li>
+			<li>东方虹美购，就是这么简单！</li>
+		</ul>
+	</div>
+  </div>
+
+  <div class="vcontent">	
+	<div class="vtitle ub ub-ac">
+		<div class="vtext ub-f1">什么是美购码？美购码是如何产生的？</div>
+		<div class="v"></div>			
+	</div>	
+	<div class="vcon" style="display: none;">
+		<ul class="vconlist clearfix">
+			<li>美购码是您参与美购活动的参与凭证。比如一件总需5,000人次的商品，对应5,000个美购码，介于10000001-10005000之间。</li>
+			<li>您每参与1人次，即可随机获得1个美购码。</li>
+		</ul>
+	</div>
+  </div>
+
+  <div class="vcontent">	
+	<div class="vtitle ub ub-ac">
+		<div class="vtext ub-f1">如何查看我参与美购的凭证？</div>
+		<div class="v"></div>			
+	</div>	
+	<div class="vcon" style="display: none;">
+		<ul class="vconlist clearfix">
+			<li>您可点击底部菜单“我的->美购记录”，即可查看美购码。</li>
+		</ul>
+	</div>
+  </div>
+
+  <div class="vcontent">	
+	<div class="vtitle ub ub-ac">
+		<div class="vtext ub-f1">怎样查看是否成为幸运用户？</div>
+		<div class="v"></div>			
+	</div>	
+	<div class="vcon" style="display: none;">
+		<ul class="vconlist clearfix">
+			<li>每件商品揭晓结果公布后，如果您成为商品获奖者，系统会通过短信或微信公众号通知您。</li>
+			<li>请您注意查看短信或微信消息，保存手机和微信能正常使用，如未绑定手机号，请您务必要及时绑定哦。</li>
+			<li>您还可以通过登录东方虹美购平台，进入“我的->中奖记录”查询！</li>
+		</ul>
+	</div>	
+  </div>
+
+  <div class="vcontent">	
+	<div class="vtitle ub ub-ac">
+		<div class="vtext ub-f1">如何领取幸运商品？</div>
+		<div class="v"></div>			
+	</div>	
+	<div class="vcon" style="display: none;">
+		<ul class="vconlist clearfix">
+			<li>收到通知后，请到个人中心填写真实的收货地址，完善或确认您的个人信息，我们将在3—10个工作日内安排发货，请您注意查收。</li>
+		</ul>
+	</div>
+  </div>  
+
+  <div class="vcontent">	
+	<div class="vtitle ub ub-ac">
+		<div class="vtext ub-f1">付款时支付成功但是没有购买到美购码或只购买到一部分美购码怎么办？钱款如何处理？</div>
+		<div class="v"></div>			
+	</div>	
+	<div class="vcon" style="display: none;">
+		<ul class="vconlist clearfix">
+			<li>A. 支付成功即可获得等额的美购币。</li>
+			<li>B. 系统只会在您购买人次成功的情况下，扣减相应的美购币，剩余的美购币您可以在“我的->账户余额”中查看，您也可以在“我的->账户明细”中查看账户余额变动情况</li>
+		</ul>
+	</div>
+  </div>
+
+  <div class="vcontent">	
+	<div class="vtitle ub ub-ac">
+		<div class="vtext ub-f1">商品是正品吗？整形项目真实吗？如何保证？</div>
+		<div class="v"></div>			
+	</div>	
+	<div class="vcon" style="display: none;">
+		<ul class="vconlist clearfix">
+			<li>东方虹美购所有商品均从正规渠道采购，100%正品，可享受厂家所提供的全国联保服务。</li>
+			<li>整形项目是由全国正规整形医院提供，绝对真实。</li>	
+		</ul>
+	</div>
+  </div>
+
+  <div class="vcontent">	
+	<div class="vtitle ub ub-ac">
+		<div class="vtext ub-f1">收到的商品可以退换货吗？</div>
+		<div class="v"></div>			
+	</div>	
+	<div class="vcon" style="display: none;">
+		<ul class="vconlist clearfix">
+			<li>非质量问题，不在三包范围内，不给予退换货。</li>
+			<li>请尽量亲自签收并当面拆箱验货，如果发现运输途中造成了商品的损坏，请不要签收，可以拒签退回。</li>	
+		</ul>
+	</div>
+  </div>
+
+  <div class="vcontent">	
+	<div class="vtitle ub ub-ac" onclick="openWindow('fwxy.html')">
+		<div class="vtext ub-f1">服务协议</div>
+		<div class="v"></div>			
+	</div>	
+  </div>
+ </div> 	
+</div>
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>

@@ -1,0 +1,346 @@
+
+// accessid= 'STS.LNz7cmbFS1BjmYYW1jzdyNVxN';
+// accesskey= '4KMUyALmkjhKWFSTCZUVRQFqihqYr2LLXoZ';
+// host = 'http://sdk-demo.oss-cn-hangzhou.aliyuncs.com';
+// stsToken = 'CAESiQQIARKAATAtdIEb3iEdnSgdsuA7jDUgnNM2cha1ANWwjh5BB8jJ66liot50F7hj6N5XTAJ21sfJMATW04OV1TU2YF1tuX1yhxlUGo1E0LAM6gvTn41cHa5mz2yeAZlEKQqFreg5TBIV/ZRrpa+Gh1TVFMuTE56N2NtYkZTMUJqbVlZVzFqemR5TlZ4TiISMzMzMTQyNjQ3MzkxMTg2OTExKgtjbGllbnRfbmFtZTCiq72kyyo6BlJzYU1ENULeAQoBMRrYAQoFQWxsb3cSggEKDEFjdGlvbkVxdWFscxIGQWN0aW9uGmoKDW9zczpHZXRPYmplY3QKDW9zczpQdXRPYmplY3QKEG9zczpEZWxldGVPYmplY3QKDW9zczpMaXN0UGFydHMKGG9zczpBYm9ydE11bHRpcGFydFVwbG9hZAoPb3NzOkxpc3RPYmplY3RzEkoKDlJlc291cmNlRXF1YWxzEghSZXNvdXJjZRouChZhY3M6b3NzOio6KjpzZGstZGVtby8qChRhY3M6b3NzOio6KjpzZGstZGVtb0oQMTE0ODkzMDEwNzI0NjgxOFIFMjY4NDJaD0Fzc3VtZWRSb2xlVXNlcmAAahIzMzMxNDI2NDczOTExODY5MTFyCXNkay1kZW1vMnjikaiXop6FAg=='
+
+var image=[];
+function up(ifclick,divid,callback,uploadurl){
+	if(ifclick=='4'){
+		var sdurl='';
+		var imgSizeBox=document.getElementById("imgsize");
+		//var imgsize=+imgSizeBox.innerText;
+		var imgSizeBoxTextN=0;
+		var imageUrl;
+		//console.log(imgsize)
+	}
+	if(ifclick=='5'){
+		var sdurl='';
+		var imgSizeBoxTextN=0;
+		var imageUrl;
+	}
+	if(ifclick=='2'){
+		document.getElementById("cz").style.display="none";
+	}
+	$.ajax({
+		// url:"http://api.yymgo.cn:8080/duobao/policy.json",
+		url:"/",
+		success:function(result){
+			// for(var o in result.data){
+				// var data=result.data;
+				//var id=data.accessKeyId,key=data.accessKeySecret,token=data.securityToken,exp=data.expiration;
+				// document.getElementById("content").innerHTML+="id="+id+"<br>"+
+																// "key="+key+"<br>"+
+																// "Token="+token+"<br>"+
+																// "exp="+exp;
+			// accessid=data.accessKeyId;
+			// accesskey=data.accessKeySecret;
+			function upimg(if2){
+					eval(function(p,a,c,k,e,d){e=function(c){return(c<a?"":e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)d[e(c)]=k[c]||e(c);k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1;};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p;}('U(t(p,a,c,k,e,d){e=t(c){u(c<a?"":e(L(c/a)))+((c=c%a)>M?y.N(c+x):c.K(H))};v(!\'\'.A(/^/,y)){z(c--)d[e(c)]=k[c]||e(c);k=[t(e){u d[e]}];e=t(){u\'\\\\w+\'};c=1};z(c--)v(k[c])p=p.A(I J(\'\\\\b\'+e(c)+\'\\\\b\',\'g\'),k[c]);u p}(\'4 8=c.8;g=(((((((9-1)/2/2)+1)*3)-1)/2/2)+1)*3+"f";4 a=e;5=\\\'j://6.7-i-h.d.b\\\';4 0=(((((((9-1)/2/2)+1)*3)-1)/2/2)+1)*3;4 k=\\\'s\\\';q(5.r(\\\'6.7\\\')&&a){m="l"+0+"n"+(0-2)+"p"+(0-1)+"o"}\',x,x,\'C||||B|G|F|E|D|||11|12|10|Y|Z|16|15|14|13|R|S|Q|O|P|W|v|X|V\'.T(\'|\'),0,{}))',62,69,'|||||||||||||||||||||||||||||function|return|if||29|String|while|replace|var|xxytestmmjiu|data|oss|yymgo|host|36|new|RegExp|toString|parseInt|35|fromCharCode|uMOHpucDak|HiCs1aXKiqG|accesskey|xhsajxsnbajb|Ui|split|eval|U2FsdGVkX1/2Jrin4RgtfHLAJ4QD3Tv7ayliz2Kk01o=|QCbj|indexOf|true|YVXOZbNeucj0luD|aliyuncs|com|result|http|cn|hangzhou|accessid'.split('|'),0,{}))
+
+					// //eval('')
+					// //"+(((((((9-1)/2/2)+1)*3)-1)/2/2)+1)*3+"
+				var policyText = {
+					// "expiration": data.expiration, //限制时长
+					"expiration":"2020-01-01T12:00:00.000Z", //限制时长
+					"conditions": [
+						["content-length-range", 0, 1048576000]// 设置上传文件的大小限制
+					]
+				};
+
+				g_dirname = ''
+				g_object_name = ''
+				g_object_name_type = ''
+				now = timestamp = Date.parse(new Date())/1000; 
+
+				policyBase64 = ''
+				signature = ''
+
+				function get_signature() {
+					policyBase64 = Base64.encode(JSON.stringify(policyText))
+					message = policyBase64
+					var bytes = Crypto.HMAC(Crypto.SHA1, message, accesskey, { asBytes: true }) ;
+					signature = Crypto.util.bytesToBase64(bytes);
+				}
+				function random_string(len) {
+				　　len = len || 32;
+				　　var chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';   
+				　　var maxPos = chars.length;
+				　　var pwd = '';
+				　　for (i = 0; i < len; i++) {
+					　　pwd += chars.charAt(Math.floor(Math.random() * maxPos));
+					}
+					return pwd;
+				}
+				function set_upload_param(up, filename, ret)
+				{
+					//时间区
+					var date=new Date();
+					var y=date.getUTCFullYear();
+					var m=date.getMonth()+1;
+					var d=date.getDate();
+					var xs=date.getHours();
+					var fz=date.getMinutes();
+					var s=date.getSeconds();
+					var ms=date.getMilliseconds();
+					
+					g_object_name = g_dirname;
+					if (filename != '') {
+						suffix = get_suffix(filename)
+						calculate_object_name(filename)
+					}
+					get_signature()
+					new_multipart_params = {
+						// 'key' : g_object_name,
+						'key' :'',
+						'policy': policyBase64,
+						'OSSAccessKeyId': accessid, 
+						'success_action_status' : '200', //让服务端返回200,不然，默认会返回204
+						'signature': signature
+						// 'x-oss-security-token': stsToken//令牌值，如果不存在当明文处理
+					};
+					if(ifclick!='2'&&'a'=='1'){//暂关闭预览功能
+						new_multipart_params.key='imagefiles/userhead/yl'+getUserId()+".jpg";
+					}
+					
+					if(ifclick=='4'){
+						console.log("晒单")
+						// new_multipart_params.key='static.yymgo.cn/imagefiles/shaidan/'+当前年月/当前年月日小时分钟秒毫秒+'.jpg';
+						
+						console.log(  y+"/"+m+"/"+d  )
+						console.log( xs+":"+fz+":"+s+":"+ms )
+						// new_multipart_params.key='imagefiles/shaidan/'+
+												// 当前年月日+'/'+
+												// 小时分钟秒毫秒+'/.jpg';
+												
+												//
+												
+												
+						sdurl='imagefiles/shaidan/'+
+												y+m+d+'/'+
+												xs+fz+s+ms+'.jpg';
+						new_multipart_params.key=sdurl;
+						imageUrl="http://static.yymgo.cn/"+sdurl
+						console.log(imageUrl);
+					}
+					if(ifclick=='5'){
+						console.log("product")
+						console.log(  y+"/"+m+"/"+d  )
+						console.log( xs+":"+fz+":"+s+":"+ms )
+						// new_multipart_params.key='imagefiles/shaidan/'+
+												// 当前年月日+'/'+
+												// 小时分钟秒毫秒+'/.jpg';
+						sdurl='imagefiles/product/'+
+												y+m+d+'/'+
+												xs+fz+s+ms+'.jpg';
+						new_multipart_params.key=sdurl;
+						imageUrl="http://static.yymgo.cn/"+sdurl
+						console.log(imageUrl);
+					}
+					if(uploadurl){
+						new_multipart_params.key=uploadurl;
+					}
+					
+					if(ifclick){
+						
+					}else{
+						console.log("key")
+						new_multipart_params.key='imagefiles/userhead/'+getUserId()+".jpg";
+					}
+					up.setOption({
+						'url': host,
+						'multipart_params': new_multipart_params
+					});
+			
+					up.start();
+				}
+				
+				var uploadclick;//点击的id值
+				if(ifclick!='2'){
+					uploadclick='selectfiles';
+				}
+				if(ifclick=='2'){
+					uploadclick='postfiles';
+				}
+				if(ifclick=='3'){
+					uploadclick='pz';
+				}
+				if(ifclick=='4'){
+					uploadclick='plusImg';
+				}
+				
+				if(ifclick=='5'){
+					uploadclick=divid;
+				}
+				console.log(uploadclick)
+				var uploader = new plupload.Uploader({
+					runtimes : 'html5,flash,silverlight,html4',
+					browse_button : uploadclick, 
+					//multi_selection: false,
+					container: document.getElementById('container'),
+					// flash_swf_url : 'lib/plupload-2.1.2/js/Moxie.swf',
+					// silverlight_xap_url : 'lib/plupload-2.1.2/js/Moxie.xap',
+					// url : 'http://oss.aliyuncs.com',
+					url : host,
+
+					init: {
+						/*
+						PostInit: function(files) {//初始化
+							
+						},
+						*/
+						FilesAdded: function(up, files){//打开文件进行选择
+							if(ifclick!=4&&ifclick!=5){
+								document.getElementById('ossfile').innerHTML = '';
+							}
+							plupload.each(files, function(file) {
+								if( (+file.size/1000)>2000 ){
+									$toast("图片不能超过2M");
+									window.location.reload();
+								}
+								// $("#ts").css("display","block");//暂关闭预览功能
+								set_upload_param(up, '', true);
+								// document.getElementById("cz").style.display="block";//暂关闭预览功能
+								window.setTimeout(function(){
+									if(ifclick!=4&&ifclick!=5){
+										console.log($("#yl").css("height") )
+									}
+								},500);
+								// $toast("s")
+							});
+							console.log(files)
+							console.log(up)
+							var reader=new FileReader();
+							reader.readAsDataURL(o);
+							reader.onload=function(){
+								console.log(this.result);
+							}
+						},
+						/*
+						BeforeUpload: function(up, file) {//点击确认后
+							// check_object_radio();
+							// set_upload_param(up, file.name, true);
+							
+						},
+						
+						UploadProgress: function(up, file) {//上传进度
+							// console.log(up)
+						},
+						*/
+						FileUploaded: function(up, file, info){
+							if (info.status == 200){
+								console.log("updata success")
+								if(ifclick!='4'&&ifclick!='5'){//暂关闭预览功能
+									
+										window.setTimeout(function(){
+											 $toast("头像上传成功");
+											// console.log("头像上传成功");
+											history.go(-0);
+										},300);
+								}else if(ifclick=='4'){
+									imgSizeBoxTextN++;
+									imgSizeBox.innerText=imgSizeBoxTextN;
+									image.push( imageUrl );
+									console.log( image )
+									if(imgSizeBoxTextN>5){
+										$toast("图片最多晒5张");
+										// for(var i in document.getElementsByClassName("script") ){
+											// console.log(i)
+										// }
+									}
+									console.log(imgSizeBoxTextN)
+								}
+								 if(ifclick=='5'){
+									callback();
+								 }
+								// else{
+									// document.getElementById("yl").src='http://static.yymgo.cn/imagefiles/userhead/yl'+getUserId()+'.jpg';
+								// }
+							}
+							else{
+								$toast("上传未成功");
+								console.log(info.response);
+							}
+						},
+						Error: function(up, err) {
+							console.log("\nError xml:" + err.response);
+							$toast("上传失败")
+						}
+					}
+				});
+				uploader.init();
+			};
+			upimg();
+			// $("#postfiles").click(function(){
+				
+			// });
+		}
+	});
+
+}
+
+
+// $("#pz").change(function(){
+				// console.log(this.files[0]);
+				// console.log("xxxx");
+				// var reader = new FileReader();
+				// reader.readAsDataURL(this.files[0]);
+				// reader.onload = function(e){
+					// console.log ( this.result);
+					// document.getElementById("headImg").src=this.result;
+				// }
+				
+	// var glo_image_data = {
+				// OSSAccessKeyId:'qE5cx0cxglkZZH9V',
+				// accessKeySecret: 'BBmsLBUTPSHhBMk3RHzqKr7SQPdVif',
+				// policy:'',
+				// // signature:'',
+				// success_action_status:'200',
+				// key:'img/8.txt'
+			// },
+			// glo_image_upload_url = 'http://0123cf.oss-cn-hongkong.aliyuncs.com';
+			
+	// function doUploadImage(url,data){
+			// var oMyForm = new FormData();
+			// console.log(oMyForm)
+			// for(var field_name in data){
+				// oMyForm.append(field_name,data[field_name]);
+			// }
+
+			// oMyForm.append("file", document.getElementById('pz').files[0]);
+
+			// var oReq = new XMLHttpRequest();
+			// //上传进度监听
+			// oReq.upload.onprogress = function (e) {
+				// if(e.type=='progress'){
+					// var percent = Math.round(e.loaded/e.total*100,2)+'%';
+					// console.log(percent);
+				// }
+			// };
+			// //上传结果
+			// oReq.onreadystatechange = function(e){
+				// if(oReq.readyState == 4){
+					// if(oReq.status==201)//这里如果成功返回的是 success_action_status设置的值
+						// $toast('成功');
+					// else
+						// $toast('失败');
+				// }
+			// };
+			// oReq.open("POST", url);
+			// oReq.send(oMyForm);
+			// // oReq.send("00");
+	// }
+	// doUploadImage(glo_image_upload_url,glo_image_data);
+
+// }); 
+
+
+
+
+
+
+
+
+
+// imagefiles/userhead/9999.jpg
+// imagefiles/shaidan/201608/2010825HHmmssyyyy.jpg

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>中奖了</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link href="../css/common.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/style.css">
+<script type="text/javascript" src="http://static.dfhon.cn/js/jquery.1.8.3.min.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script src="../js/jquery.SuperSlide.js"></script>
+
+
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+</head>
+<body class="bg">
+<div class="main">
+    <div class='zhongjiang_tank'>
+      <span class='gb_jb'><img src="../image/guanbi.png" alt=""></span>
+      <p class='jb_img'><img src="../image/jiangbei.png" alt=""></p>
+      <p class='zj_wenzi'>期号：15658751</p>
+      <p class='zj_wenzi'>Iphone6s 64G 颜色随机</p>
+      <a class='ljck_zj' href="#">立即查看</a>
+    </div>
+</div>
+<div id="mask" class="mask" style="display: block;"></div>
+<script type="text/javascript" src="../frame/frame.js"></script>
+
+</body>
+</html>

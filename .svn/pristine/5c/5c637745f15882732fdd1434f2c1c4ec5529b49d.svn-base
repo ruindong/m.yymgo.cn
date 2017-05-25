@@ -1,0 +1,36 @@
+// 充值状态查询
+var DM_PayResultRecharge = function(){
+	MessageMachine.call(this);
+
+	// url
+	this.url = url_host+"/pay/resultRecharge";
+
+	// template
+    this._template= 
+    '<div class="uinn"> '+
+    '    <div class="kong"><img src="../image/wanhuatong.png" alt=""></div> '+
+    '    <div class="c-center f-big2 c-important">恭喜您，充值成功，到账￥{{totalPrice}}！</div> '+
+    '    <div class="umar-t">充值时间：{{createTime}}，您可查询<a class="c-link" href="../my/account_detail.html">账户明细</a></div> '+
+    '</div>';
+
+	// set Render
+	this.setRender(this._template);
+
+	
+	// 数据格式转换
+	this.transfer = function(data){
+		if (data) {
+			// 日期格式
+			data.createTime = getSmpFormatDateByLong(data.createTime);
+		}
+				
+		return data;
+	}
+	
+	
+	// 测试数据
+	this.getTestData = function(){
+		var response = '{}';
+		return JSON.parse(response);
+	}
+}

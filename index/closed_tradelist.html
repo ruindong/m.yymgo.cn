@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="format-detection" content="telephone=no" />
+<title>揭晓</title>
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../js/scroll/css/myScroll.css"/>
+
+<script type="text/javascript" src="js/zy_Click.js"></script>
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/base/TimeCountDown.js"></script>
+
+<script type="text/javascript" src="../js/DateFormater.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/Public_Trade.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/dm/DM_ClosedTradeList.js"></script>
+<script type="text/javascript" src="../js/dm/DM_ClosedTradeList_Status.js"></script>
+
+<script type="text/javascript" src="../js/base/BounceList.js"></script>
+<script type="text/javascript" src="../js/scroll/QiScroll.js"></script>
+<script type="text/javascript" src="../js/iscroll-probe.js"></script>
+<script type="text/javascript" src="../js/Tocca.js"></script>
+</head>
+<body class="bg">
+<script type="text/javascript">
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load()
+    {
+      var dm_ClosedTradeList = new DM_ClosedTradeList();
+
+      // 提取数据并更新
+      var blMgr = new BounceListMgr("main");
+      blMgr.init("sclist_closedtrade", dm_ClosedTradeList);
+    }
+
+    // ****倒计时刷新控制****
+    // 倒计时结束，重新获取状态
+    function cbTimeOver()
+    {
+        var tradeno = arguments[0];
+        refreshStatus(tradeno);
+    }
+    function refreshStatus(tradeno)
+    {
+        // 重新获取数据
+        var dm_Status = new DM_ClosedTradeList_Status();
+        var url = dm_Status.url;
+        url += tradeno + ".json";
+
+        dm_Status.setUrl(url);
+
+        // 提取数据并更新
+        DataCenter.getDataAnsyc("li_" + tradeno, dm_Status, cbStatus);
+    }
+    function cbStatus(response, showId, machine)
+    {
+        // 更新
+        DataCenter.afterSuccess(response, showId, machine);
+
+        var id = showId.replace("li_", "");
+        $("#" + id).fnTimeCountDownFromNow(20, cbTimeOver); 
+    }  
+</script>
+
+<div id="main" class="main">
+   <div class="jx_area_1">
+     <ul id="sclist_closedtrade" ></ul>
+   </div>
+</div>
+<script type="text/javascript" src="../frame/footer.js"></script>
+</body>
+
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

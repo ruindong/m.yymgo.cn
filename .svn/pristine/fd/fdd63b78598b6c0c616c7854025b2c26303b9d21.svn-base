@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>添加地址</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link type="text/css" rel="stylesheet" href="../css/common.css" />
+<link type="text/css" rel="stylesheet" href="../css/watch.css" />
+<link type="text/css" rel="stylesheet" href="../css/style.css" />
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/zy_click.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript" src="../js/dm/Post_AddAddress.js"></script>
+
+<script type="text/javascript" src="../frame/city.js"></script>
+<script type="text/javascript" src="../frame/cityChioce.js"></script>
+<style>
+	
+	#cityOn{
+		display:inline-block;
+		width:60%;
+		text-align:right;
+		padding-right:0.5em;
+	}
+	
+	
+	
+	*{margin:0;padding:0;}
+html,body{-webkit-text-size-adjust: 100%;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);}/*取消移动端点击背景变化*/
+						#cityBox{
+							width:100%;
+							height:100%;
+							background:rgba(0,0,0,.7);
+							text-align:center;
+							color:#999;
+							cursor:pointer; 
+							-webkit-tap-highlight-color:transparent;
+							z-index:999;
+							position: absolute;
+							top: 0px;
+							left: 0;
+							background: rgba(0,0,0,.7);
+							display:none;
+						}
+						#cityBox	p,#cityBox span,#cityBox #l,#cityBox #r{
+								-webkit-user-select:none;
+						    -moz-user-select:none;
+						    -ms-user-select:none;
+						    user-select:none;	
+						-webkit-tap-highlight-color:transparent;
+							}
+						#cityBox p{
+								border-bottom:1px solid rgba(0,0,0,.04);
+						}
+						#cityBox #l,#cityBox #r{
+								display:inline-block;
+								width:46%;
+								padding:0.5em 0;
+								color:#444;
+						}
+						#cityBox #l{text-align:left;}
+						#cityBox #r{text-align:right;}
+						#cityBox #back{
+								display:block;
+								height:1.6em;
+								border-top:1px solid rgba(255,80,70,.5);
+								border-bottom:1px solid rgba(255,80,70,.5);
+								position:relative;
+								background:rgba(0,0,0,0);
+								z-index:1000;
+								top:1.7em;
+						}
+						#cityBox	#box3{
+								width:100%;/*有定位，请勿删除*/
+								height:50%;
+								background:#fff;
+								overflow:hidden;
+								position:absolute;
+								bottom:0;
+						}
+						#cityBox>div:after{
+								display:block;
+								clear:both;
+						}
+						#cityBox>div>div{
+								width:33.333%;
+								float:left;
+								display:block;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+								position:relative;
+								top:-1.7em;
+								z-index:999999999;
+						}
+							#cityBox #box3 span{
+								position:relative;
+								top:-0em;	
+								transition:top 300ms;
+						}
+						
+							#cityBox #box3>div{
+								position:relative;
+								line-height:1.7em;
+								padding:0;
+						}
+</style>
+</head>
+<body>   
+
+<script>
+	var ConsigneeName;
+	var phone;
+	var fullcity;
+	var txtArea;
+
+	window.onload=function(){load();}
+	function load()
+	{
+		city("fullcity");
+		document.getElementById("fullcity").addEventListener("touchstart",function(){
+			document.getElementById('cityBox').style.display='block';
+		});
+
+		$("#txtArea").on("touchstart",function(e){
+			e.stopPropagation();
+		});
+		$("#phone").on("touchstart",function(e){
+			e.stopPropagation();
+		});
+		$("#ConsigneeName").on("touchstart",function(e){
+			e.stopPropagation();
+		});
+		$(".bcxg").on("touchstart",function(e){
+			e.stopPropagation();
+		});
+    }
+
+    // 合法性校验
+    function invalidate()
+    {
+		ConsigneeName=$("#ConsigneeName").val();
+		phone=$("#phone").val();
+		fullcity=$("#fullcity").val();
+		txtArea=$("#txtArea").val();
+
+		if(ConsigneeName.length<1){
+			$toast("请填写收货人！");
+			return false;
+		}
+		if(!validatePhoneNum(phone)){
+			$toast("请输入正确的手机号码");
+			return false;
+		}
+		if(fullcity.length<1){
+			$toast("请选择省市区信息！");
+			return false;
+		}
+		if(txtArea.length<5){
+			$toast("详细地址至少5个字符~");
+			return false;
+		}
+
+		return true;
+    }
+
+
+    // 添加地址
+    function addAddress()
+    {
+    	if(!invalidate())
+    	{
+    		return;
+    	}
+
+		var machine = new Post_AddAddress();
+		var ssq=fullcity.split("-");
+		var ssq1=ssq[0];
+		var ssq2=ssq[1];
+		var ssq3=ssq[2];
+		var msg={
+				'province':ssq1,
+				'city':ssq2,
+				'county':ssq3,
+				'jiedao':txtArea,
+				'consignee':ConsigneeName,
+				'mobile':phone
+				};
+        
+        $('#btn_save').attr("disabled", true).html("正在提交...");    
+        DataCenter.post(machine, msg, cbAddAddress);
+    }
+    function cbAddAddress(result, machine)
+    {
+    	if(result)
+    	{
+            if(result.code == 0 ){
+				$toast('添加地址成功');
+			    window.setTimeout(function(){
+			    	// 小孩子蛋疼，这个地方改了无数回。。。
+			    	goBack();
+				}, 1000)
+            }
+            else
+            {
+               $toast(result.message);
+               $('#btn_save').attr("disabled", false).html("保存");                   
+            }
+    	}
+    }
+
+</script>
+
+  <div class='fadad'>
+    <div id="watch">
+        <div class='geren1'>
+            <span class='fl'>收货人</span><input id='ConsigneeName' class='fl' type="text" placeholder='收货人名字'>
+        </div>
+        <div class='geren1'>
+            <span class='fl'>联系电话</span><input id='phone' class='fl' type="text" placeholder='手机号码'>
+        </div>
+        <div class="demo geren1">
+          <span class='fl'>省市区</span><input id="fullcity" class="kbtn" placeholder='请选择>'>
+        </div>
+        <div id="datePlugin">
+        </div>
+
+        <section id="W_write" data-hash="W_write">
+            <form id="quanform">
+                <textarea name="content" id="txtArea" placeholder="请填写详细地址，不少于5个字"></textarea>
+            </form>
+        </section>
+    </div>
+ </div>
+
+  <div id="index-foot" class="banner-bottom">
+      <div id="btn_save" class="btn-red-b" ontouchstart="dfh_touch()" onclick="addAddress();">保存</div>
+  </div> 
+</body>
+<script type="text/javascript" src="../frame/frame.js"></script>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

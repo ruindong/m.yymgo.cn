@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>我的空间</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link href="../css/common.css" type="text/css" rel="stylesheet" />
+<link href="../css/watch.css" type="text/css" rel="stylesheet" />
+<link href="../css/style.css" type="text/css" rel="stylesheet" />
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript" src="../js/dm/DM_MyEcoupon.js"></script>
+<script type="text/javascript" src="../js/dm/DM_User_BaseInfo.js"></script>
+
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    // ****此处必须用window.onload，且必须用匿名方法
+    window.onload = function(){load();}   
+
+    function load()
+    {
+        getUserInfo();
+        getMyEcoupon();
+    }
+
+    // 用户基本信息
+    function getUserInfo()
+    {
+        var dm_UserInfo = new DM_User_BaseInfo();
+        var params = {"userId": getUserId()};
+        dm_UserInfo.setParams(params);
+
+        // 提取数据并更新
+        DataCenter.getDataAnsyc("#", dm_UserInfo, cbGetUserInfo);         
+    }    
+    // 回调函数
+    function cbGetUserInfo(response, showId, machine)
+    { 
+        if(response)
+        {
+          var data = response.data;
+          if(data)
+          {
+            $("#nickName").html(data.nickName);
+            $("#headimg").attr("src", data.headImg);
+
+            // mobile
+            saveMobile(data.mobile);
+          }
+        }
+    }    
+
+    // 我的账户余额：本应合并到基本信息接口中，暂时分开吧
+    function getMyEcoupon()
+    {
+         // 查询账户余额
+        var dm_MyEcoupon = new DM_MyEcoupon();
+
+        // 提取数据并更新
+        DataCenter.getDataAnsyc("ecoupon", dm_MyEcoupon, cbMyEcoupon);         
+    }
+    // 回调函数
+    function cbMyEcoupon(response, showId, machine)
+    { 
+        if(response)
+        {
+          var data = response.data;
+          if(data)
+          {
+              ecoupon = data.ecoupon;
+
+              $$("ecoupon").innerHTML = ecoupon;         
+          }
+        }	
+    }
+</script>
+
+    <div id="watch">
+    	<div class="watch_top bc-white">
+        	<div class="user">
+            	<a href="gerenziliao.html"><img id="headimg" style="border-radius:100%" class="user_l" src="../image/t.png">
+				</a>
+              <div class="user_r">
+                    <p id='nickName' class="txt14"></p>
+              </div>
+          </div>
+      </div>
+
+      <div class='ub-fh bd-t chongzhi'><p><span class='fl'></span><em>账户余额：<b class='red_1' id="ecoupon"></b>元</em><a href="recharge.html" class='fr'>充值</a></p></div>
+
+      <div class="umar-t">
+        <a href="my_tradelist.html" class='chongzhi2'><p><span class='fl'></span><em class='fl'>美购记录</em><b class='fr'></b></p></a>
+        <a href="my_winedlist.html" class='chongzhi3'><p><span class='fl'></span><em class='fl'>中奖记录</em><b class='fr'></b></p></a>
+        <a href="account_detail.html" class='chongzhi4'><p><span class='fl'></span><em class='fl'>账户明细</em><b class='fr'></b></p></a>
+        <a href="my_shaidan.html" class='chongzhi5'><p><span class='fl'></span><em class='fl'>我的晒单</em><b class='fr'></b></p></a>
+        <!-- <div style="height:.1rem;"></div> -->
+        <a href="../login/bzyfk.html" class='chongzhi6'><p><span class='fl'></span><em class='fl'>帮助与反馈</em><b class='fr'></b></p></a>
+        <a href="setup.html" class='chongzhi7'><p><span class='fl'></span><em class='fl'>设置</em><b class='fr'></b></p></a>
+      </div> 
+
+      <div class='biaozhu_my'>
+          <p>客服热线：400-0529-789</p>
+          <p>（工作时间：8:30-21:00）</p>
+      </div>       
+    </div>
+
+<script type="text/javascript" src="../frame/footer.js"></script>
+<script type="text/javascript" src="../js/user/setup.js"></script>
+</body>
+<footer></footer>
+</html>

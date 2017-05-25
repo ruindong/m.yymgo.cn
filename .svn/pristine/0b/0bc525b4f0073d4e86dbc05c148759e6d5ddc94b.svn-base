@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+<title>整形项目说明</title>
+<link href="../css/common.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/style_3.css" />
+<script src="../js/jquery-1.9.1.js"></script>
+<script src="../js/shouji.js"></script>
+</head>
+<body>
+	<div class='bzxq'>
+		<h3>整形类商品使用说明</h3>
+		<p>您收到整形项目信息后请不要透露给第三方，请尽快使
+用。</p>
+		<p>整形类商品含有三种使用类型，您可以通过以下方式使
+用您中奖的整形项目（具体需根据相应“商品详情”内描
+述）：</p>
+		<p style='height:.3rem;'></p>
+		<p>常规通用类型：</p>
+		<p>可到本平台指定医院进行消费该类中奖整形项目，不可
+替换为其他整形项目，具体指定医院可查阅“商品详情”
+内描述</p>
+		<p style='height:.3rem;'></p>
+		<p>现金券类型：</p>
+		<p>可当作现金券使用，到本平台指定的医院出示预约码，
+即可等额抵用现金</p>
+		<p>1)	本券可以抵用指定医院的任何整形项目</p>
+		<p>2)	本券可抵用整形项目相等的金额</p>
+		<p>3)	持本券消费不兑现、不找零、不拆分多次使用，消费
+超出面值部分需另外支付</p>
+		<p>4)	本券不与其他优惠同时使用</p>
+		<p>5)	本券最终解释权归1圆美购所有</p>
+		<p>6)	具体请查阅相应“商品详情”内描述</p>
+		<p style='height:.3rem;'></p>
+		<p>特殊专项类型：</p>
+
+	</div>
+	<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

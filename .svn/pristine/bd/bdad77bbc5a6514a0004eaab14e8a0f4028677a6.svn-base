@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>提现</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../css/watch.css"/>
+<link rel="stylesheet" type="text/css" href="../js/popup/css/popup.css" />
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template-native.js"></script> 
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/popup/Popup.js"></script>
+</head>
+<body class="bg">
+<script type="text/javascript">
+    var realName;
+
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load()
+    {
+        // 是否与实名绑定
+        var isRealName = true;
+
+        // 新来的
+        if(!isRealName)
+        {
+            location.replace("freshman.html");
+        }
+        // 老司机
+        else
+        {
+
+        }
+    }
+
+
+</script>
+
+  <div class="main">
+      <div class="uinn umar-t c-center c-dark bc-dark">
+        有一种幸福叫坐等收益，让您的好友帮您赚钱
+      </div>
+
+      <div class="umar-t bc-gray">
+        <div class="uinn">
+          <div class="f-big">佣金余额</div>
+          <div class="umar-ts ub ub-ac">
+            <div class="ub-f1 umar-r">
+              <div class="c-important f-big2">￥1,000</div>
+              <!--
+              <div class="umar-ts">
+                 <span class="c-link">提现</span>
+                 <span class="c-link umar-l">充值到美购</span>
+              </div>
+            -->
+            </div>  
+            <div class="btn-red">分享赚钱</div>
+          </div>
+        </div>
+
+        <div class="umar-ts ub c-center">
+          <div class="umw-50">
+            <div class="uinn bc-white bd-r">
+              <div class="f-big">￥800.00</div>
+              <div class="umar-t c-gray">可用余额</div>
+            </div>  
+          </div>
+          <div class="umw-50">
+            <div class="uinn bc-white">            
+              <div class="f-big">￥1000.00</div>
+              <div class="umar-t c-gray">提现审核（冻结）</div>
+            </div>                
+          </div>
+        </div>    
+        <div class="ub c-center bd-t">
+          <div class="umw-50">
+            <div class="uinn bc-white bd-r">
+              <div class="f-big">￥800.00</div>
+              <div class="umar-t c-gray">累计收入</div>
+            </div>  
+          </div>
+          <div class="umw-50">
+            <div class="uinn bc-white">            
+              <div class="f-big">￥1000.00</div>
+              <div class="umar-t c-gray">累计支出</div>
+            </div>                
+          </div>
+        </div>
+      </div>  
+
+      <div class="my-menu">
+        <div class="ub ub-ac" onclick="openWindow('my_tradelist.html')">
+          <div class="ub-img icon-trade"></div>
+          <div class="umar-l ub-f1">共邀请（人）</div>
+          <div class="umar-r">10</div>
+          <div class="ub-img icon-arrow"></div>
+        </div>
+
+        <div class="ub ub-ac" onclick="openWindow('my_tradelist.html')">
+          <div class="ub-img icon-trade"></div>
+          <div class="umar-l ub-f1">佣金报表</div>
+          <div class="ub-img icon-arrow"></div>
+        </div>
+
+        <div class="ub ub-ac" onclick="openWindow('my_tradelist.html')">
+          <div class="ub-img icon-trade"></div>
+          <div class="umar-l ub-f1">提现记录</div>
+          <div class="ub-img icon-arrow"></div>
+        </div>  
+
+        <div class="ub ub-ac" onclick="openWindow('my_tradelist.html')">
+          <div class="ub-img icon-trade"></div>
+          <div class="umar-l ub-f1">帮助须知</div>
+          <div class="ub-img icon-arrow"></div>
+        </div>                       
+      </div>  
+  </div>  
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

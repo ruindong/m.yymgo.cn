@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>在线支付</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    // 第三方支付iframe外壳，避免页面回退路径太长
+    // ****此处必须用window.onload，且必须用匿名方法
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+       var url = getPayUrl();
+       removePayUrl();
+       createFrame(url);
+
+    }
+
+    // 动态创建iframe，据说可以藏匿history记录
+    function createFrame(url)
+    {
+      var str = '\
+      <iframe id="payshell" name="payshell" width=100% height=100% frameborder=0 scrolling=auto>\
+      </iframe>\
+      ';      
+
+      //$(str).prependTo('body'); 
+      $("body").append(str);
+      $("#payshell").attr("src", url);  
+
+      var stateObj = { from: "shell" }; 
+      history.pushState(stateObj, "", "");      
+    }
+
+    window.onpopstate = function (event) {
+          alert("location: " + document.location + ", state: " + JSON.stringify(event.state));
+
+          if(event && event.state)
+          {
+            var state = event.state;
+            if(state.from == "c")
+            {
+              alert("C--OK");
+            }
+          }
+    };   
+</script>
+
+</body>
+</html>
+
+           

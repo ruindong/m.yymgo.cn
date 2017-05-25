@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>我的晒单</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../js/scroll/css/myScroll.css"/>
+
+<script type="text/javascript" src="../js/zy_click.js"></script>
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+
+<script type="text/javascript" src="../js/template-native.js"></script> 
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+
+<script type="text/javascript" src="../js/dm/DM_MyShareList.js"></script>
+<script type="text/javascript" src="../js/DateFormater.js"></script>
+
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+
+<script type="text/javascript" src="../js/base/BounceList.js"></script>
+<script type="text/javascript" src="../js/scroll/QiScroll.js"></script>
+<script type="text/javascript" src="../js/iscroll-probe.js"></script>
+<script type="text/javascript" src="../js/Tocca.js"></script>
+<script type="text/javascript" src="../js/dm/post-del-share.js"></script>
+<style>
+/*
+//关闭删除晒单功能
+#delbox{display:none}
+*/
+.del{
+	display:block;
+	float:right;
+	width:0.1rem;
+	height:0.1rem;
+	background:url(../image/del.png);
+	background-size:100% 100%;
+	/*color:#000;*/
+	padding:1em;
+	margin:1em;
+	position:relative;
+	left:-3em;
+	white-space:nowrap;
+	color:#09f;
+}
+.del:after{
+	margin-left:2em;
+	content:"删除"
+}
+</style>
+</head>
+<body class="bg">
+<script type="text/javascript">
+    window.onload = function(){load();loaddel();} 
+
+    // 初始化加载数据
+    function load()
+    {
+      var dm_MyShareList = new DM_MyShareList();
+
+      // 弹动
+      var blMgr = new BounceListMgr("main");
+      blMgr.init("sclist_myshare", dm_MyShareList);
+    }
+
+    // 晒单详情
+    function openShareInfo(shareId)
+    {
+      var url = "../index/sdxq.html?shareId=" + shareId;
+      openWindow(url);
+    }
+	function loaddel(){
+		$(document).on('click','.del',function(event){
+			var box=$(this).parent().parent();
+			//box.css("border","1px solid red");
+			var data=box.children('#getdata').html().split(',');
+			var id=data[0];
+			var time=data[2];
+			var expTime=30;//不允许超过的分钟数
+			var cTime = +new Date(Date.parse(time.replace(/-/g, "/"))).getTime();
+					//创建时间
+					var timeArray=time.split('-');
+					var y1=+timeArray[0];//年
+					var m1=+timeArray[1];//月
+					var d1=+timeArray[2].substring(0,2);// 日
+					var xs1Arrsy=time.split(':')[0];
+					var xs1ArrsyLength=xs1Arrsy.length
+					var xs1=+xs1Arrsy.substring(xs1ArrsyLength-2,xs1ArrsyLength)//小时
+					var fz1=+time.split(':')[1];
+					
+					var date=new Date();
+					var y=date.getUTCFullYear();
+					var m=date.getMonth()+1;
+					var d=date.getDate();
+					var xs=date.getHours();
+					var fz=date.getMinutes();
+			console.log(time)
+			function exp(){
+				$toast("需删除晒单，请联系管理员！");
+			}
+			
+			var timestamp =+ Date.parse(new Date()); 
+			console.log(cTime);
+			console.log(timestamp)
+			var NET=timestamp-cTime;
+			var ifFz=NET / 1000 / 60 ;
+			if(ifFz>expTime){
+				exp();
+				return false;
+			}
+			var del=new DelShare();
+			var msg={
+				id:id
+			}
+			DataCenter.post(del,msg,function(result){
+				if(result.code==0){
+					$toast("删除成功")
+					history.go(0);
+				}else if(result.code==1){
+					$toast(result.message)
+				}
+				
+			})
+			//box.css("border","1px solid red");
+			
+		});
+		
+	}
+</script>
+  <div id="main" class="main">
+    <div id="sclist_myshare"></div>
+  </div>
+</body>
+</html>

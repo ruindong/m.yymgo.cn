@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>充值记录</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../js/scroll/css/myScroll.css"/>
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/template-native.js"></script> 
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+
+<script type="text/javascript" src="../js/dm/DM_MyEcouponRecords.js"></script>
+<script type="text/javascript" src="../js/DateFormater.js"></script>
+
+<script type="text/javascript" src="../js/base/BounceList.js"></script>
+<script type="text/javascript" src="../js/scroll/QiScroll.js"></script>
+<script type="text/javascript" src="../js/iscroll-probe.js"></script>
+</head>
+<body class="bg">
+<script type="text/javascript">  
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load()
+    {
+      var dm_MyEcouponRecords = new DM_MyEcouponRecords();
+
+      // 提取数据并更新
+      var blMgr = new BounceListMgr("main");
+      blMgr.init("sclist_ecrecords", dm_MyEcouponRecords);        
+    }
+</script>
+
+  <div class="main">
+    <div id="main"> 
+      <div class="cz_jb">充值获得的金币（1元=1金币），可用于美购，充值的款项将无法退回。</div>
+      <div id="cz_yjl">
+          <ul id="sclist_ecrecords">
+          </ul>
+      </div>
+    </div>  
+
+    <div id="index-foot" class="banner-bottom">
+      <div class="btn-red-b" onclick="openWindow('recharge.html');">立即充值</div>   
+    </div>     
+  </div>
+
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

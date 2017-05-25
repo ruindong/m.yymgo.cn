@@ -1,0 +1,83 @@
+﻿<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<title>收货地址</title>
+<link type="text/css" rel="stylesheet" href="../css/popup.css" />
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../js/scroll/css/myScroll.css"/>
+
+<script src="../js/jquery-1.9.1.js"></script>
+<script src="../js/jquery.totop.min.js"></script>
+<script src="../js/jquery.bxslider.min.js" type="text/javascript" ></script>
+
+<script type="text/javascript" src="../js/zy_click.js"></script>
+
+<script type="text/javascript" src="../js/template.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript" src="../js/dm/DM_AddressList.js"></script>
+<script type="text/javascript" src="../js/dm/Post_AddressDel.js"></script>
+
+<script type="text/javascript" src="../js/base/BounceList.js"></script>
+<script type="text/javascript" src="../js/scroll/QiScroll.js"></script>
+<script type="text/javascript" src="../js/iscroll-probe.js"></script>
+<script type="text/javascript" src="../js/Tocca.js"></script>
+
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+</head>
+
+<body>
+  <div class="main">
+    <div id="scroll_zone">
+        <div id="address_list"></div>
+    </div>
+
+    <!-- 弹窗 -->
+    <div class="cd-popup" role="alert">
+        <div class="cd-popup-container">
+            <p>是否删除该收货地址？</p>
+            <ul class="cd-buttons">
+                <li><span class="cd-popup-ok">确定</span></li>
+                <li><span class="cd-popup-cancel">取消</span></li>
+            </ul>
+            <span class="cd-popup-close img-replace">Close</span>
+        </div> <!-- cd-popup-container -->
+    </div>    
+  </div>  
+<script src="../js/user/adress.js"></script>
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+<footer>
+    <div id="index-foot" class='banner-bottom'><button class="btn-red-b" onclick="openWindow('../my/address_add.html');">添加新地址</button></div>
+</footer>        
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

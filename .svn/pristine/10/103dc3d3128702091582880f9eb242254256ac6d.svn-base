@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>个人资料</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link type="text/css" rel="stylesheet" href="../css/common.css"/>
+<link type="text/css" rel="stylesheet" href="../css/watch.css">
+<link type="text/css" rel="stylesheet" href="../css/headImages.css">
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Upload.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript" src="../js/dm/DM_User_BaseInfo.js"></script>
+<script type="text/javascript" src="../js/dm/Post_UpdateHeadImg.js"></script>
+</head>
+<body>
+<script>
+    // ****此处必须用window.onload，且必须用匿名方法
+    window.onload = function(){load();}   
+
+    function load()
+    {
+        getUserInfo();
+
+		// 回退时需要刷新
+		goBackRefresh(function(){
+			// 重新加载
+			getUserInfo();
+		});          
+    }
+
+    // 用户基本信息
+    function getUserInfo()
+    {
+        var dm_UserInfo = new DM_User_BaseInfo();
+        var params = {"userId": getUserId()};
+        dm_UserInfo.setParams(params);
+
+        // 提取数据并更新
+        DataCenter.getDataAnsyc("#", dm_UserInfo, cbGetUserInfo);         
+    }    
+    // 回调函数
+    function cbGetUserInfo(response, showId, machine)
+    { 
+        if(response)
+        {
+          var data = response.data;
+          if(data)
+          {
+            $("#headimg").attr("src", data.headImg);
+            $("#userId").html(data.id);
+            $("#account").html(data.account);
+            $("#nickName").html(data.nickName);
+          }
+        }
+    }  
+
+    // 选择图片
+	function changeHead(inputComponent)
+	{
+		var file = inputComponent.files[0];
+		Upload.uploadFile(file, updateHeadImg);
+	}
+
+    // 修改头像
+    function updateHeadImg(picurls)
+    {
+      var machine = new Post_UpdateHeadImg();
+      var parms={
+        headImg: picurls,
+        userId: getUserId()
+      }
+
+      DataCenter.post(machine, parms, cbUpdateHeadImg)
+    }
+
+    // 回调函数
+    function cbUpdateHeadImg(result, machine)
+    {
+      if(result)
+      {
+        if(result.code == 0)
+        {
+          $toast("头像修改成功！");
+
+          $("#headimg").attr("src", result.data.headImg); //设置头像
+        }
+        else
+        {
+          $toast(result.message);
+        }
+      }
+    }
+</script>
+
+    <div id="watch">
+        <div class='geren'>
+			<div id='touxiang' class='chongzhi2'>
+				<p style="position: relative"><em class='fl'>头像</em>
+					<b class='fr'></b>
+					<img style="border-radius:100%;" id="headimg" class='fr' src="" alt="">
+				</p>
+				<!--选择图片上传修改头像-->
+				<input type="file" onchange="changeHead(this);" class="select-face">
+			</div>
+			<div class='chongzhi3'><p><em class='fl'>ID</em><em class='fr haoma' id="userId"></em></p></div>
+            <div class='chongzhi4'><p><em class='fl'>账号</em><em class='fr haoma' id="account"></em></p></div>
+            <a href="update_nickname.html" class='chongzhi5'><p><em class='fl'>昵称</em><b class='fr'></b><em class='fr haoma1' id="nickName"></em></p></a> 
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html manifest="IGNORE.manifest">
+<head>
+<title>个人资料</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link href="../css/common.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/watch.css">
+<link rel="stylesheet" href="../css/headImages.css">
+<script type="text/javascript" src="http://static.dfhon.cn/js/jquery.1.8.3.min.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript">
+    window.scale=document.documentElement.clientWidth/3.2;
+    document.getElementsByTagName("html")[0].style.fontSize=window.scale + "px";
+    if( window.scale*3.2 > 1200){ document.getElementsByTagName("html")[0].style.fontSize=window.scale/2.5 + "px";} 
+</script>
+<style>
+	#pz{
+		position:relative;
+		height:2em;
+		margin-left:-150%;
+		width:300%;
+		background:rgba(255,0,0,0);
+		z-index:10;
+		display:block;
+	}
+	.pzfont{
+		position:absolute;
+		left:50%;
+		-webkit-transform: translateX(-50%);
+		-moz-transform: translateX(-50%);
+		-o-transform: translateX(-50%);
+		-ms-transform: translateX(-50%);
+		transform: translateX(-50%);
+	}
+</style>
+</head>
+<body>
+	
+    <div id="watch">
+        <div class='geren'>
+            <a id='touxiang' href="#" class='chongzhi2'><p><em class='fl'>头像</em><b class='fr'></b><img style="border-radius:100%;" id="headImg" class='fr' src="" alt=""></p></a>
+            <a href="#" class='chongzhi3'><p><em class='fl'>ID</em><em class='fr haoma' id="userID"></em></p></a>
+            <a href="#" class='chongzhi4'><p><em class='fl'>账号</em><em class='fr haoma' id="moblie"></em></p></a>
+            <a href="xiugainicheng.html" class='chongzhi5'><p><em class='fl'>昵称</em><b class='fr'></b><em class='fr haoma1' id="name">待补全</em></p></a> 
+        </div>
+    </div>
+	<DIV id="upload" class="upload" style="display:none">
+		<div class="site">
+			<div id="container">
+				<div class='btn'>
+					 <span><a class="pzfont" onclick="pz">拍照</a><input id="pz" type="file" accept="image/*"></span>
+					 <p id="selectfiles" href="javascript:void(0);"> 从相册选择</p>
+				</div>
+				<p id="cancel" href="javascript:void(0);" style="margin-top:10px;" class='btn'>取消</p>
+			</div>
+		</div>
+	</DIV>
+	<DIV id="ts" class="ts" style="display:none">
+		<div class="title">
+			头像上传
+		</div>
+		<div id="ossfile">你的浏览器不支持flash,Silverlight或者HTML5！</div>
+			<img id="yl" class="yl" src="">
+		<div class="cz" id="cz" style="display:none">
+			<button id="postfiles" href="javascript:void(0);">确定</button>
+			<button id="cancel2" href="javascript:void(0);">取消</button>
+		</div>
+	</DIV>
+<script src="../js/user/setup.js"></script>
+<script type="text/javascript" src="/headimg/lib/crypto1/crypto/crypto.js"></script>
+<script type="text/javascript" src="/headimg/lib/crypto1/hmac/hmac.js"></script>
+<script type="text/javascript" src="/headimg/lib/crypto1/sha1/sha1.js"></script>
+<script type="text/javascript" src="/headimg/lib/base64.js"></script>
+<script type="text/javascript" src="/headimg/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script type="text/javascript" src="/headimg/upload.js"></script>
+<script>
+	(function(){
+		up();
+	// up("2");//第二次点击				
+		up('3');//拍照
+
+		var url='http://static.yymgo.cn/imagefiles/userhead/'+getUserId()+'.jpg';
+		document.getElementById("headImg").src=url;
+		$('#headImg').error(function(){
+			$(this).attr('src',"http://static.yymgo.cn/imagefiles/userhead/8.jpg");
+		})
+		$("#touxiang").click(function(){
+			$("#upload").css("display","block");
+		});
+		$("#cancel").click(function(){
+			$("#upload").css("display","none");
+		});
+		$("#cancel2").click(function(){
+			window.location.reload();
+		});
+		$("#selectfiles").click(function(){
+			$("#upload").css("display","none");
+		});
+		
+	})();
+	
+
+
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

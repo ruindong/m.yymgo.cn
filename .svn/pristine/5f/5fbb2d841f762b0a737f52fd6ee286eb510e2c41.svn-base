@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>美购详情</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="format-detection" content="telephone=no" />
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../js/scroll/css/myScroll.css"/>
+<link rel="stylesheet" type="text/css" href="../js/popup/css/popup.css" />
+<link rel="stylesheet" type="text/css" href="../js/swiper/css/swiper.css">
+
+<script type="text/javascript" src="../js/zy_Click.js"></script>
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/base/TimeCountDown.js"></script>
+<script type="text/javascript" src="../js/swiper/swiper.jquery.min.js"></script>
+
+<script type="text/javascript" src="../js/DateFormater.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/PopWin_Order.js"></script>
+<script type="text/javascript" src="../js/base/Public_Trade.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+
+<script type="text/javascript" src="../js/dm/DM_Commodity.js"></script>
+<script type="text/javascript" src="../js/dm/DM_Commodity_Status.js"></script>
+<script type="text/javascript" src="../js/dm/DM_Commodity_PartInRecord.js"></script>
+<script type="text/javascript" src="../js/dm/DM_MyTradeBuyCount.js"></script>
+<script type="text/javascript" src="../js/dm/Post_CreateOrder.js"></script>
+<script type="text/javascript" src="../js/dm/Post_LastestTradeNo.js"></script>
+
+<script type="text/javascript" src="../js/base/FilterFunction.js"></script>
+<script type="text/javascript" src="../js/popup/Popup.js"></script>
+
+<script type="text/javascript" src="../js/base/BounceList.js"></script>
+<script type="text/javascript" src="../js/scroll/QiScroll.js"></script>
+<script type="text/javascript" src="../js/iscroll-probe.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    var tradeno;
+    var commoId;
+    var commodityName;
+
+    // ***必须用window.onload，匿名函数
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+      // 获取请求参数
+      tradeno = getQueryString("tradeno");
+
+      if(tradeno == null)
+      {
+        $toast("参数丢失");
+        return;
+      }
+
+      // 先加载商品信息
+      loadCommodity(tradeno);
+    }
+
+    // -----加载商品信息
+    function loadCommodity(tradeno)
+    {
+      var dm_Commodity = new DM_Commodity();
+      var url = dm_Commodity.url;
+      url += tradeno + ".json";
+
+      dm_Commodity.setUrl(url);
+
+      // 提取数据并更新
+      DataCenter.getDataAnsyc("trade_info", dm_Commodity, cbCommodity);
+    }
+
+    // 获取商品信息回调函数
+    function cbCommodity(response, showId, machine)
+    {
+        // 更新
+        DataCenter.afterSuccess(response, showId, machine);
+
+        // 修改Title
+        $(document).attr("title","东方虹美购，" + response.data.commodity.name);
+        
+        // 加载参与状态信息
+        loadJoinStatus();
+
+        // 加载本期参与者信息
+        loadCommodityPartInRecord();
+
+        // 初始化头部图片滑动，****必须在上一句加载弹动框架以后
+        if(response && response.data.commodityImages && response.data.commodityImages.length > 1)
+        {
+            initSlider();
+        }
+
+        // 倒计时器，***必须在加载弹动框架以后
+        $("#timeCountDown").fnTimeCountDown(response.data.trade.curTime, response.data.trade.closeTime, cbTimeOver);
+    }
+
+    // ------加载本期参与者信息
+    function loadCommodityPartInRecord()
+    {
+      var dm_CommodityPartInRecord = new DM_Commodity_PartInRecord();
+      var url = dm_CommodityPartInRecord.url;
+      url += tradeno + ".json";
+
+      dm_CommodityPartInRecord.setUrl(url);
+
+      // 初始化弹动区域，头部图片slider依赖于此
+      var blMgr = new BounceListMgr("scroll_zone");   
+      // 弹动数据
+      blMgr.init("join_lb", dm_CommodityPartInRecord);    
+    }
+
+
+    // ------加载参与状态信息
+    function loadJoinStatus()
+    {
+      // 判断是否登录
+      var bSignIn = isSignIn();
+      if(!bSignIn)
+      {
+        $$("join_status").innerHTML = '<div class="umar-t uinn bc-gray c-center" ontouchstart="dfh_touch()" onclick="login();">立即登录东方虹美购，收获 惊喜！</div>';
+      }
+      else
+      {
+        var dm_MyTradeBuyCount = new DM_MyTradeBuyCount();
+        var url = dm_MyTradeBuyCount.url;
+        url += tradeno + ".json";
+        url += "?userId=" + getUserId();
+
+        dm_MyTradeBuyCount.setUrl(url);
+        
+        // 提取数据并更新
+        DataCenter.getDataAnsyc("join_status", dm_MyTradeBuyCount);      
+      }
+    }         
+
+    // ****头部图片滑动****
+    function initSlider()
+    {
+        // 轮播效果
+        var swiper = new Swiper('.swiper-container', {
+            pagination: '.swiper-pagination',
+            paginationClickable: true,
+            centeredSlides: true,
+            autoplay: 5000,
+            autoplayDisableOnInteraction: false
+        });   
+    }
+
+
+    // ****倒计时刷新控制****
+    // 倒计时结束，重新获取状态
+    var refreshCount = 0;  // 刷新次数，自动刷新3次，避免数据库负荷过重
+    function cbTimeOver()
+    {
+        refreshCount++;
+
+        if(refreshCount > 3)
+        {
+          // 删除确认
+          Popup.confirm(getEvent(), "获取老时时彩数据有延迟，需要自动刷新吗？", refreshStatus);
+        }
+        else
+        {
+          refreshStatus();
+        }
+    }
+    function refreshStatus()
+    {
+        // 重新获取数据
+        var dm_CommodityStatus = new DM_Commodity_Status();
+        var url = dm_CommodityStatus.url;
+        url += tradeno + ".json";
+
+        dm_CommodityStatus.setUrl(url);
+
+        // 提取数据并更新
+        DataCenter.getDataAnsyc("cp_status", dm_CommodityStatus, cbStatus);      
+    }
+    function cbStatus(response, showId, machine)
+    {
+/*
+        var str = '{"code":0,"message":"success","version":"1.1","data":{"commodity":{"id":2044,"commodityType":{"id":4,"name":"生活家居","createTime":1476168850000},"coverImgUrl":"http://static.yymgo.cn/imagefiles/product/201610/201610312232560202.jpg","name":"50元手机话费XX","price":58,"intro":"电信、移动、联通","descriptionUrl":"http://manage2.yymgo.cn/product/2044.html","commodityImages":[{"id":null,"smallImageUrl":"http://static.yymgo.cn/imagefiles/product/201610/201610312232589109.jpg","bigImageUrl":"http://static.yymgo.cn/imagefiles/product/201610/201610312233044893.jpg","commodityModel":null}]},"trade":{"tradeNo":2044023,"commName":"50元手机话费","commodityId":2044,"coverImgUrl":"http://static.yymgo.cn/imagefiles/product/201610/201610312232560202.jpg","ecoupon":1,"totalCount":58,"remainCount":0,"status":"calculate","startTime":"2016-11-09 19:21","closeTime":"2016-11-09 20:18","targetUser":null,"phase":"20161109086","lotteryNo":null,"targetCode":"","orderCount":null,"ip":null,"curTime":1478693689437,"city":null},"lastestTradeno":null,"numberA":13674373240,"ip":null,"curTime":1478693689437,"city":null},"pageIndex":1,"pageCount":1}';
+        response = JSON.parse(str);
+*/      
+        // 更新
+        DataCenter.afterSuccess(response, showId, machine);
+        
+        // 重启倒计时
+        $("#timeCountDown").fnTimeCountDownFromNow(20, cbTimeOver);
+    }    
+
+    // ****功能函数****
+    // 往期揭晓
+    function openWqjx(cId)
+    {
+      var url = "wqjx.html?commoId=" + cId;
+      openWindow(url);
+    }
+    // 商品详情
+    function openSpxq(url)
+    {
+      openWindow(url);
+    }
+    // 晒单分享
+    function openSdfx(cId)
+    {
+      var url = "sdfx.html?commoId=" + cId;
+      openWindow(url);
+    }
+
+    // 查询我的美购号
+    function queryMyTradeCodes()
+    {
+      var userid = getUserId();
+
+      openUserTradeCodes(userid, tradeno);
+    }
+
+    // 弹出购买窗口
+    function popOrder(tno, name, imgUrl, ecoupon, remain)
+    {
+        // 赋值
+        tradeno = tno;
+        commodityName = name;
+
+        showPopWin_Order(order, imgUrl, ecoupon, remain);
+    }
+
+    // 下单
+    function order()
+    {
+        // 获取输入数量
+        count = $$("number").value;
+        createOrder(tradeno, count);
+    }     
+</script>
+
+<div id="main" class="main">
+  <div id="trade_info">
+    <div class="umar-t uinn ub ub-pc ub-ac">
+      <div class="c-dark">小美正在玩命加载中...</div>
+      <div class="umar-l ub-img umwh" style="background-image:url(/image/loading.gif)"></div>
+    </div>  
+  </div>
+</div>  
+
+<!-- 微信分享 -->
+<!--
+<div id='fenxiang'></div>
+<script type="text/javascript" src="../frame/share.js"></script>
+-->
+<!-- 更多 -->
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

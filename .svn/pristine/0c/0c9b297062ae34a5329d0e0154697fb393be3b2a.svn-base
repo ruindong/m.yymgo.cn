@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>绑定手机号码</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link type="text/css" rel="stylesheet" href="../css/common.css" />
+<link type="text/css" rel="stylesheet" href="../css/style.css" />
+<link type="text/css" rel="stylesheet" href="../css/style_3.css" />
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+
+<script type="text/javascript" src="../js/dm/Post_BindMobile.js"></script>
+<script type="text/javascript" src="../js/dm/Post_retrieve.js"></script>
+
+<script type="text/javascript" src="../js/base/VerifyCode.js"></script>
+
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    var mobile;
+    var payPwd;
+    var code;
+
+    // 绑定手机号码
+    function bindMobile()
+    {
+        if(!validateretrieve())
+        {
+            return;
+        }
+
+        var machine = new Post_BindMobile();
+        var params = {
+            "mobile": mobile,
+            "code": code
+        }
+
+        DataCenter.post(machine, params, cbBindMobile);   
+    }
+    function cbBindMobile(result, machine)
+    {
+      if (result.code==0 ){
+        $toast("绑定手机号码成功！");
+
+        window.setTimeout(function(){
+            goBack();
+        }, 1000);        
+      }else{
+        $toast(result.message);
+      }      
+    } 
+
+    // 校验
+    function validateretrieve(){
+        mobile = $("#PhoneNum").val();
+        code = $("#Code").val();
+
+        if(!validatePhoneNum(mobile))
+        {
+            $toast("请输入正确的手机号码！");             
+            return;
+        }
+
+        if(!code){
+            $toast("请输入验证码！"); 
+            return false;
+        }        
+
+        return true;
+    }    
+
+    function _sendCode(id)
+    {
+         mobile = $("#PhoneNum").val();
+         sendCode(mobile, id);
+    }
+</script>    
+
+  <div class="main">
+     <div class="mm">
+         <div class='bai'> 
+            <input id="PhoneNum" class="mmSJ" type="text" name="userName" placeholder="手机号" />
+            <input id="Code" class="yzm" type="text" name="hqyzm" placeholder="验证码" />             
+            <span><em id="send_btn" onclick="_sendCode(id);">获取验证码</em></span>
+            <span class="time60">重新发送（60）</span>
+         </div>
+         <p onclick="bindMobile()" class="mmCZ">绑定手机号码</p>
+     </div>  
+  </div>
+
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>

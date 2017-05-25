@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="format-detection" content="telephone=no" />
+<title>Show KM Assistant</title>
+<link href="../css/common.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/style.css">
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    function showKM()
+    {
+        var token = $("#token").val();
+        var tradeno = $("#tradeno").val();
+
+        if(tradeno == "")
+        {
+            $toast("tradeno is null...");
+            return;            
+        }
+        if(token == "")
+        {
+            $toast("token is null...");
+            return;
+        }
+
+        var storage = window.localStorage;
+        setItem(storage, "token", token);
+
+        openWindow("/my/show_km.html?tradeno=" + tradeno);    
+    }
+</script>   
+  <div class="main uinn bc-white">
+    <div>Plese input your information...</div>
+    <div class="umar-t">
+      <input id="tradeno" placeholder='tradeno' value="" class="input-1" /> 
+    </div>
+    <div class="umar-t">
+      <input id="token" placeholder='token' value="" class="input-1" /> 
+    </div>
+    <div class="umar-tb"><button id="submit" class="btn-red-b" onclick="showKM();">Query</button></div>
+  </div>
+
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

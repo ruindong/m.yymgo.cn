@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>设置</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link href="../css/common.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/watch.css">
+<script type="text/javascript" src="http://static.dfhon.cn/js/jquery.1.8.3.min.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+</head>
+<body>
+    <div id="watch">
+        <div class='geren'>
+            <a id='touxiang' href="address.html" class='chongzhi2'><p><em class='fl'>管理收货地址</em><b class='fr'></b></p></a>
+            <a href="bind_mobile.html" class='chongzhi5'><p><em class='fl'>手机号码</em><b class='fr'></b><em class='fr haoma1'></em></p></a> 
+            <a href="paypw.html" class='chongzhi5 tcdl'><p><em class='fl'>支付管理</em><b class='fr'></b><em class='fr haoma1'></em></p></a>             
+        </div>
+        <div class='baocun'>
+            <a class='bcxg' onclick='var localStorage=window.localStorage;localStorage.clear();window.location="../login/dl.html";'>退出登录</a>
+        </div>
+
+    </div>
+<script>
+	var Mobile=function(){//昵称
+	MessageMachine.call(this);
+	this.url=url_host+"user/info.json";
+	}
+	var mobile=new Mobile;
+		url=mobile.url;
+		DataCenter.post(mobile,{userId:getUserId()},xx);
+			function xx(result,machine){
+				//console.log(result.data.mobile);
+				var val=document.getElementsByClassName("haoma1")[0];
+				if(result.data.mobile){
+					val.innerText="已绑定";
+					document.getElementsByClassName("chongzhi5")[0].setAttribute("href","#");
+				}else{
+					val.innerText="未绑定";
+				}
+			}
+</script>
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

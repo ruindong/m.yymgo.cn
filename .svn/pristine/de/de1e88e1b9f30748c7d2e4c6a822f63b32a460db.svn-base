@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+<title>忘记密码</title>
+
+<link href="../css/common.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/style_3.css" />
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript" src="../js/dm/post-update-pwd.js"></script>
+<script type="text/javascript" src="../js/dm/Post_retrieve.js"></script>
+
+<script type="text/javascript" src="../js/md5.js"></script>
+<script type="text/javascript" src="../js/base/VerifyCode.js"></script>
+</head>
+
+<body>
+     <div class="mm">
+         <div class='bai'> 
+         	<input id="PhoneNum" class="mmSJ" type="text" name="userName" placeholder="手机号" />
+            <input id="Code" class="yzm" type="text" name="hqyzm" placeholder="验证码" />
+            <input class="mmMM" id="psw" type="password" name="newpasswd" placeholder="新密码" />       
+            <span id="send_btn" onclick="sendIt();">获取验证码</span>
+         </div>
+         <p onclick="new_psw()" class="mmCZ">重置密码</p>
+     </div>
+</body>
+<script>
+// 发送验证码
+function sendIt()
+{
+    var mobile= $("#PhoneNum").val();    
+    sendCode(mobile, "send_btn");
+}
+
+// 密码重置校验
+function validateretrieve(){
+    var psw = $("#psw").val();
+
+    if(psw.length<1 ){
+        $toast("新密码不能为空"); 
+        return false;
+    }
+    if(psw.length < 6 ){
+        $toast("密码要大于6位数"); 
+        return false;
+    }
+	return true;
+}
+
+// 密码重置
+function new_psw(){	
+	var mobile= $("#PhoneNum").val();
+	var password=$("#psw").val();
+	var code=$("#Code").val();
+    if(!validateretrieve()){
+        return;
+    }
+   if(!/^[\d]{4}(\d)*$/.test(code)){
+		$toast("验证码格式不正确！")
+		return;
+	}
+
+    // MD5加密
+    password = password.MD5(16);
+
+    var updatePwd = new UpdatePwd();
+    var params = {
+        "mobile": mobile,
+        "newPwd": password,
+        "code": code
+    };
+
+    DataCenter.post(updatePwd, params, updatePwdback);
+}
+// 密码重置回调函数
+function updatePwdback(result, machine){
+	if (result.code==0 ){
+		$toast("重置密码成功，请重新登录！");
+        window.setTimeout(function(){
+          window.location.replace("dl.html");
+        }, 1000);
+	}else{
+		$toast(result.message);
+	}
+}
+
+</script>
+<script type="text/javascript" src="../frame/frame.js"></script>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

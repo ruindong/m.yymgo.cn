@@ -1,0 +1,149 @@
+/**与美购商品详情有关的公共方法都在这里*/
+
+// 打开美购详情页
+function openTradeInfo(tradeno)
+{
+  lanchTradeInfo(tradeno);
+}
+
+// 打开某商品最新一期美购信息
+function openLastestTrade(tradeno)
+{
+  if(tradeno == null)
+  {
+    $toast("该商品最新一期美购尚未开启~");
+  }
+  else
+  {
+    openTradeInfo(tradeno);
+  }
+}
+
+// 生成订单
+function createOrder(tradeNo, count)
+{
+  // 生成订单
+  var msgPost = new Post_CreateOrder();
+
+  var params = {
+      "tradeno": tradeNo,
+      "count": count,
+      "user": getUserId()
+  };        
+
+  // Post生成订单请求
+  DataCenter.post(msgPost, params, cbCreateOrder);
+}
+function cbCreateOrder(result, machine)
+{
+    if (result) 
+    {
+        if (result.code == 0) {
+            console.log("创建订单成功!");
+
+            // 清除订单
+            clearOrderInfo();
+
+            // 订单对象
+            var orderInfo = new Object();
+            orderInfo.userId = getUserId();
+            orderInfo.orderId = result.data.orderId;
+            orderInfo.totalPrice = result.data.totalPrice;
+            orderInfo.tradeNo = result.data.tradeNo;
+            orderInfo.commName = result.data.commName;
+            orderInfo.myEcoupon = result.data.myEcoupon;
+            orderInfo.payPwdStatus = result.data.payPwdStatus;
+            
+            // 保存订单对象，供后续页面调用
+            saveOrderInfo(orderInfo);
+
+            // ****供支付结果回退使用****
+            var backUrl = window.location.href;
+            saveBackUrl(backUrl);              
+
+            // 如果余额足够
+            if(orderInfo.myEcoupon >= orderInfo.totalPrice)
+            {
+                if(orderInfo.payPwdStatus != "on")
+                {
+                  // 如果未设置支付密码，则直接支付
+                  payOrderByCoupon(orderInfo.orderId);                  
+                }
+                else
+                {
+                  location.href = "/my/payorder.html";                  
+                }
+            }
+            else
+            {
+                location.href = "/my/payorder.html";
+            }
+        }
+        else 
+        {
+            $toast(result.message);
+        }
+    }
+}
+ 
+
+// 第三方支付
+function payOrder(params)
+{
+  var url = url_host + "pay/pay4order";
+  var strParms = parseParms(params);
+  url = url + strParms;
+
+  saveBackUrl("/index.html");
+  
+  savePayUrl(url);
+  location.replace("/my/pay_shell.html"); // 当前页面藏匿
+}
+// 余额支付
+function payOrderByCoupon(orderId)
+{
+  location.replace("/my/pay_ecoupon.html?orderId=" + orderId); // 当前页面藏匿
+}
+
+// 充值
+function payRecharge(params)
+{
+  var url = url_host + "pay/pay4recharge";
+  var strParms = parseParms(params);
+  url = url + strParms;
+
+  saveBackUrl("/my/my.html");
+
+  savePayUrl(url);
+  location.replace("/my/pay_shell.html"); // 当前页面藏匿
+}
+
+// 解析参数
+function parseParms(params)
+{
+    if(params == null)
+    {
+        return "";
+    }
+
+    var strParms = "?";
+    for (items in params){
+        strParms += items + "=" + params[items] + "&";
+    }
+
+    // 去掉最后一个字符
+    return strParms.substr(0, strParms.length - 1);
+}
+
+// 查看用户的美购号
+function openUserTradeCodes(userid, tradeno)
+{
+  stopPropagationEx(); 
+  
+  var parms = "userid=" + userid;
+  parms += "&tradeno=" + tradeno;
+
+  var url = "/index/user_trade_codes.html?" + parms;
+
+  openWindow(url);
+}

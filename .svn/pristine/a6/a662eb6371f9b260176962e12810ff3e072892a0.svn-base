@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>提现</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../js/popup/css/popup.css" />
+<link rel="stylesheet" type="text/css" href="../js/password/css/PasswordForge.css" />
+
+<script type="text/javascript" src="../js/md5.js"></script>
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template-native.js"></script> 
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/popup/Popup.js"></script>
+
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript" src="../js/dm/Post_PayPwd_Confirm.js"></script>
+<script type="text/javascript" src="../js/password/PasswordForge.js"></script>
+</head>
+<body class="bg">
+<script type="text/javascript">
+    var realName;
+
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load()
+    {
+      // 支付密码
+    }
+
+    // 提现申请
+    function applyIt()
+    {
+      // 合法性检查
+      if(!isValidate())
+      {
+        return;
+      }
+
+      // 确认支付密码
+      PasswordForge.verifyPassword(confirmPayPwd);
+
+    }
+
+    // 合法性检查
+    function isValidate()
+    {
+      return true;
+    }
+
+    // 确认支付密码
+    function confirmPayPwd(password)
+    {
+        // MD5加密
+      password = password.MD5(16);      
+      var machine = new Post_PayPwd_Confirm();
+      var params = {"payPassword": password};
+
+      DataCenter.post(machine, params, cbConfirmPayPwd);
+    }
+    function cbConfirmPayPwd(result, machine)
+    {
+      if(result.code==0 )
+      {  
+        var data = result.data;
+
+        // 正确
+        if(data.isRight == "true")
+        {
+          $('#btn_pay').attr("disabled", true).html("正在提交...");
+          withdraw();
+        }
+        else
+        {
+          // 再来一次
+          PasswordForge.verifyPassword(confirmPayPwd, "支付密码错误");
+        }
+      }
+    }
+
+    // 提现
+    function withdraw()
+    {
+      alert("withdraw");
+    } 
+</script>
+
+  <div class="main">
+      <div class="uinn c-center c-dark bc-dark">
+        <div class="f-big">当前可提现余额</div>
+        <div class="umar-t f-big2">￥800</div>
+        <div class="c-gray">可提现余额满100元即可提现</div>
+      </div>
+
+      <div class="uinn bc-white">
+        <div>提现金额最低为100元</div>
+        <div><input id="phoneno" placeholder='提现金额' value="" class="input-1" /></div>        
+      </div>
+
+      <div class="uinn bc-white">
+        <div>请填写持卡人为“法海”的银行卡信息，用于接收您的提现款项</div>
+        <div class="umar-t"><input id="phoneno" placeholder='银行名称' value="" class="input-1" /></div>
+        <div><input id="phoneno" placeholder='开户行' value="" class="input-1" /></div>
+        <div><input id="phoneno" placeholder='银行卡号' value="" class="input-1" /></div>
+      </div>
+
+      <div class='banner-bottom'><button id="btn_pay" class="btn-red-b" onclick="applyIt();">提交申请</button></div>      
+  </div>  
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

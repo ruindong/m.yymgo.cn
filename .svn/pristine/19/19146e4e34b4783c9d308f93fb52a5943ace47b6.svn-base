@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>我的晒单</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../js/scroll/css/myScroll.css"/>
+
+<script type="text/javascript" src="../js/zy_click.js"></script>
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+
+<script type="text/javascript" src="../js/template-native.js"></script> 
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+
+<script type="text/javascript" src="../js/dm/DM_MyShareList.js"></script>
+<script type="text/javascript" src="../js/DateFormater.js"></script>
+
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+
+<script type="text/javascript" src="../js/base/BounceList.js"></script>
+<script type="text/javascript" src="../js/scroll/QiScroll.js"></script>
+<script type="text/javascript" src="../js/iscroll-probe.js"></script>
+<script type="text/javascript" src="../js/Tocca.js"></script>
+<script type="text/javascript" src="../js/dm/post-del-share.js"></script>
+</head>
+<body class="bg">
+<script type="text/javascript">
+    var blMgr;
+
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load()
+    {
+      var dm_MyShareList = new DM_MyShareList();
+
+      // 弹动
+      blMgr = new BounceListMgr("main");
+      blMgr.init("sclist_myshare", dm_MyShareList);
+    }
+
+    // 晒单详情
+    function openShareInfo(shareId)
+    {
+      var url = "../index/sdxq.html?shareId=" + shareId;
+      openWindow(url);
+    }
+
+    // 删除晒单
+    function deleteShare(shareId, allowDelete)
+    {
+    	if(!allowDelete) // 过期不允许删除
+    	{
+    		$toast("如需删除，请联系管理员！");
+    	}
+    	else
+    	{
+	        var machine = new DelShare();
+	        var params = {
+	          "id": shareId
+	        }
+
+	        DataCenter.post(machine, params, cbDeleteShare);       		
+    	}
+    }
+    function cbDeleteShare(result, machine)
+    {
+		if (result.code==0 )
+		{
+			$toast("删除晒单成功！");
+
+			window.setTimeout(function(){
+			    blMgr.pullDown();
+			}, 1000);  
+		}
+		else
+		{
+			$toast(result.message);
+		}      
+    }    
+</script>
+  <div id="main" class="main">
+    <div id="sclist_myshare"></div>
+  </div>
+</body>
+</html>

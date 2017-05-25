@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+<title>帮助详情</title>
+<link href="../css/common.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/style_3.css" />
+<script src="../js/jquery-1.9.1.js"></script>
+<script src="../js/shouji.js"></script>
+</head>
+<body>
+	<div class='bzxq'>
+		<h3>怎样参加1圆美购？</h3>
+		<p>登录1圆美购</p>
+		<p>a、选择喜欢的商品，选择要参与的人次并支付；</p>
+		<p>b、每人次花费1元，即可获得1个美购号码；</p>
+		<p>1圆美购，就是这么简单！</p>
+
+	</div>
+	<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>

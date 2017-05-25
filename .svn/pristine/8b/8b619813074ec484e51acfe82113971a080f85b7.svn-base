@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>计算规则</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="format-detection" content="telephone=no" />
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script> 
+
+<script type="text/javascript" src="../js/DateFormater.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/PopWin_Order.js"></script>
+<script type="text/javascript" src="../js/base/Public_Trade.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+
+<script type="text/javascript" src="../js/dm/DM_CodeRule.js"></script>
+<script type="text/javascript" src="../js/dm/DM_Commodity.js"></script>
+</head>
+<body>
+<script type="text/javascript">  
+    var tradeno;
+
+    $(window).load = load(); 
+
+    // 初始化加载数据
+    function load(){
+      // 获取请求参数
+      tradeno = getQueryString("tradeno");
+
+      if(tradeno == null)
+      {
+        $toast("参数丢失");
+        return;
+      }
+
+      // 加载trade信息
+      loadTradeInfo();
+
+      // 加载号码信息
+      loadCodeRule();
+    }
+
+    // 加载trade信息
+    function loadTradeInfo()
+    {
+      var dm_Commodity = new DM_Commodity();
+      var url = dm_Commodity.url;
+      url += tradeno + ".json";
+
+      dm_Commodity.setUrl(url);
+
+      // 提取数据并更新
+      DataCenter.getDataAnsyc("none", dm_Commodity, cbTradeInfo);
+    }
+    // 回调函数
+    function cbTradeInfo(response, showId, machine)
+    {
+      var data = response.data;
+      if(data)
+      {
+        // 直接更新页面上的几个数据
+        var numberA = data.numberA;
+        var numberB = data.trade.lotteryNo;
+        var targetCode = data.trade.targetCode;
+        var phase = data.trade.phase;
+
+        if(!numberA)
+        {
+          numberA = "正在努力计算中...";
+        }
+        if(!numberB)
+        {
+          numberB = "正在等待揭晓...";
+        }
+        if(!targetCode)
+        {
+          targetCode = "等待揭晓...";
+        }
+
+        $("#targetCode").html(targetCode);
+        $("#numberA").html("=" + numberA);
+        $("#numberB").html("=" + numberB);
+        $("#phase").html("（第" + phase + "期）");
+      }   
+    }    
+
+    // 加载100条号码信息
+    function loadCodeRule()
+    {
+      var dm_CodeRule = new DM_CodeRule();
+      var params = {
+        "tradeno": tradeno
+      };
+      dm_CodeRule.setParams(params);
+
+      DataCenter.getDataAnsyc("join_list", dm_CodeRule);      
+    }
+</script>    
+
+<div class="main">
+  <div class="guize_tou">
+    <div class="c-white">幸运号码</div>
+    <div class="f-big2" id="targetCode"></div>
+  </div>
+  <div class="">
+    <div class="uinn bd-b bc-white">
+      <div class="f-big">计算方式：</div>
+      <div class="umar-t f-normal">[(数值A + 数值B) ÷ 商品所需人次]取余数 + 10000001</div>
+    </div>
+
+    <div class="umar-t uinn bd-b bc-white">  
+      <div class="f-big">数值A：</div>
+      <div class="umar-t f-normal">=截止该商品最后一条美购记录起，往前100条全站参与记录时间之和
+      </div>
+      <div class="umar-t ub ub-fh">
+        <div class="ub-f1 c-important f-big" id="numberA"></div>
+        <div><a id="zhankai" class="c-link zhankai">展开↓</a></div>
+      </div>  
+      <div id="xx_list" class="uinn bc-gray uhide">
+        <div class="ub ub-fh uinn-b bd-b f-normal">
+          <div class="ub-f1">美购时间</div>
+          <div class="c-right">参与用户</div>
+        </div>
+        <div id="join_list" class="uinn-t f-small">
+        </div>      
+      </div>            
+    </div>
+
+    <div class="uinn bd-b bc-white"> 
+      <div class="f-big">数值B：</div>
+      <div class="umar-t fnormal">=最近一期中国福利彩票“老时老彩”的揭晓结果</div>
+      <div class="umar-t ub ub-fh ub-ac">
+        <div class="c-important f-big" id="numberB"></div>
+        <div class="umar-l" id="phase"></div>
+      </div>  
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="../frame/frame.js"></script>
+<script>
+$(function(){ 
+  $(".menu a").on("click",function(){
+        $(this).parents(".menu").hide();
+    })
+
+  // 展开收起
+  $("#zhankai").on("click",function(){
+        var val = $(this).attr('class');
+        if(val.indexOf('on') == -1){
+            $(this).addClass('on');
+            $("#xx_list").removeClass("uhide");
+            function replace(value){
+                document.getElementById('zhankai').innerHTML = value
+            }
+            replace('收起↑');
+        }else{
+            $(this).removeClass('on');
+            $("#xx_list").addClass("uhide");
+            function replace(value){
+                document.getElementById('zhankai').innerHTML = value
+            }
+            replace('展开↓');
+        }
+    })    
+});
+</script>
+</body>
+</html>

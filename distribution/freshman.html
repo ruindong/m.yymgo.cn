@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>实名绑定</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../js/popup/css/popup.css" />
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template-native.js"></script> 
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/popup/Popup.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    var realName;
+
+    // 弹出确认窗口
+    function popup(event)
+    {
+      // 合法性检验
+      if(!isValidate())
+      {
+        return;
+      }
+
+      Popup.confirm(event, '真实姓名不能更改，您输入的“' + realName + '”是正确的么？', bindRealName);
+    }
+
+    // 绑定实名
+    function bindRealName()
+    {
+      alert("bind");
+    }
+
+    // 合法性校验
+    function isValidate()
+    {
+      realName = $.trim($("#real_name").val());
+      if(!realName)
+      {
+        $toast("请输入您的真实姓名！");
+        return false;
+      }
+
+      return true;
+    }
+</script>
+
+  <div class="main">
+      <div class="uinn umar-t c-center">
+        <div class="f-big2 c-important"><b>分享好友赚钱啦</b></div>
+        <div class="umar-tb c-dark">好友、好友的好友参与美购，坐等收益</div>
+        <div class="umar-ts f-big2"><b><em class="c-important">5%</em> + <em class="c-important">2%</em>多重现金奖励</b></div>
+      </div>
+
+      <div class="umar-t uinn bc-white">
+        <div>为保障您的资金安全，首次使用请务必设置真实姓名，后续提现至银行卡，只可提现至该姓名下的银行卡</div>
+        <div class="umar-t">
+          <input id="real_name" maxlength="10" class="input-1" type="text" name="account" placeholder="您的真实姓名" value="" />
+        </div>
+        <div class="uinn umar-t">
+            <div id="btn_save" class="uinn umar-t btn-red-b" ontouchstart="dfh_touch()" onclick="popup(event);">实名绑定</div>
+        </div>
+      </div>     
+  </div>
+
+  <!-- 弹窗 -->
+  <div class="cd-popup" role="alert">
+      <div class="cd-popup-container">
+          <p>请确认您的真实姓名是否正确？</p>
+          <ul class="cd-buttons">
+              <li><span class="cd-popup-ok">确定</span></li>
+              <li><span class="cd-popup-cancel">取消</span></li>
+          </ul>
+          <span class="cd-popup-close img-replace">Close</span>
+      </div> <!-- cd-popup-container -->
+  </div>     
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

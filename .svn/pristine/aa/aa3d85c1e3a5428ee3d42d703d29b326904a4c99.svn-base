@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>评价晒单</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/watch.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript" src="../js/dm/DM_MyWinnedTradeInfo.js"></script>
+<script type="text/javascript" src="../js/dm/Post_Share.js"></script>
+<script type="text/javascript" src="../js/base/Upload.js"></script>
+
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    var tradeno;
+    var commId;
+
+    var shareText; // 晒单文本
+
+    $(window).load = load(); 
+
+    // 初始化加载数据
+    function load(){
+      // 获取请求参数
+      tradeno = getQueryString("tradeno");
+
+      if(tradeno == null)
+      {
+        $toast("参数丢失");
+        return;
+      }
+
+      // 加载中奖商品信息
+      loadWinnedTradeInfo(tradeno);
+    }
+
+    // -----加载中奖商品信息
+    function loadWinnedTradeInfo(tradeno)
+    {
+      var dm_tradeInfo = new DM_MyWinnedTradeInfo();
+      var url = dm_tradeInfo.url;
+      url += tradeno + ".json";
+
+      dm_tradeInfo.setUrl(url);
+
+      // 提取数据并更新
+      DataCenter.getDataAnsyc("trade_info", dm_tradeInfo, cbTradeInfo);
+    }
+    function cbTradeInfo(response, showId, machine)
+    {
+      DataCenter.afterSuccess(response, showId, machine);
+
+      if(response && response.data)
+      {
+        commId = response.data.commodity.id;
+      }
+    }
+
+    //-----以下晒单功能
+    // 晒单
+    function publish()
+    {
+      if(!isValidate())
+      {
+        return;
+      }
+
+      // 上传图片
+      Upload.uploadFileMultiple(aryFile, uploadSucess, uploadFailed);
+    }
+    // 上传成功
+    function uploadSucess(picurls)
+    {
+      addShare(picurls);
+    }
+    // 上传失败
+    function uploadFailed()
+    {
+      $toast("图片上传失败！");
+    }
+
+    // 晒单
+    function addShare(picurls)
+    {
+      var machine = new Post_Share();
+      var parms={
+        tradeno: tradeno,//期号
+        commodity_model_id: commId,//商品型号
+        share_text: shareText,
+        image_urls: picurls
+      }
+
+      // 禁止重发
+      $('#btn_publish').attr("disabled", true).html("正在提交...");
+      DataCenter.post(machine, parms, cbShare)
+    }
+
+    // 回调函数
+    function cbShare(result, machine)
+    {
+      if(result)
+      {
+        if(result.code == 0 )
+        {
+          $toast("晒单成功！");
+
+          window.setTimeout(function(){
+            goBack();
+          }, 1000); 
+        }
+        else
+        {
+          $toast(result.message);
+        }
+      }
+
+      // 按钮使能
+      $('#btn_publish').attr("disabled", false).html("发布");
+    }
+
+    // 合法性检查
+    function isValidate()
+    {
+      shareText = $.trim($("#share_text").val());
+
+      if(shareText.length < 5){
+        $toast("至少发5个字哦~");
+        return false;
+      }
+
+      if(!aryFile || aryFile.length<=0){
+        $toast("至少发一张图哦~");
+        return false;
+      }
+      if(aryFile.length > 4){
+        $toast("最多上传4张图");
+        return false;
+      }
+      
+      return true;
+    }  
+
+    // -----以下为图片处理
+    var aryFile = new  Array(); // 图片文件数组
+    var photo_num = 0; // 已经选择的图片张数
+    var FILE_MAX_SIZE = 3145728; // 暂时限制为3M
+
+    // 添加一张图片
+    function addFile(fileCompontent)
+    {
+        var file = fileCompontent.files[0]; //获取input 选中的文件传给ploadFile方法
+
+        if(!file || file.type.indexOf("image") == -1)
+        {
+          $toast("文件不是图片格式");
+          return;
+        }
+
+        if(file.size >= FILE_MAX_SIZE)
+        {
+          $toast("图片大小不能超过3M");
+          return;
+        }
+
+        if (photo_num >= 4)
+        {
+          $toast("最多允许上传四张图片");
+          return;          
+        }
+
+        photo_num++;
+        aryFile.push(file);
+
+        //预览
+        preview(file, "img-button", photo_num - 1);
+    } 
+
+    // 图片预览
+    function preview(file, id, index)
+    {   
+        var strDiv = '\
+        <div id="img_{INDEX}" class="umar-t ub-img1 img-cover umar-r fl" style="background-image:url({URL})"\ onclick="viewPic(\'{URL}\', {INDEX})"></div>\
+        ';
+
+        var reader = new FileReader();
+        reader.onload = function (e)
+        {
+            strDiv = strDiv.replace(new RegExp(/({URL})/g), this.result);
+            strDiv = strDiv.replace(new RegExp(/({INDEX})/g), index);  
+
+            $("#" + id).before(strDiv);
+        }; 
+
+        try
+        {
+          //将文件以Data URL形式读入页面
+          reader.readAsDataURL(file);   
+        }
+        catch(err)
+        {
+          $toast(err);
+        }
+    }
+
+    // 图片查看简单版
+    var viewIndex = -1;
+    function viewPic(url, index)
+    {
+      viewIndex = index;
+      $("#mask").addClass("mask").fadeIn("slow");
+      $("#view").show();
+      $("#img_view").attr("src", url);
+    }
+
+    // 删除图片
+    function deletePic()
+    {
+      if(viewIndex == -1)
+      {
+        return;
+      }
+
+      // 从数组中删除
+      aryFile.splice(viewIndex, 1);
+      photo_num--;
+
+      // 删除div
+      $("#img_" + viewIndex).remove();
+
+      // 关闭窗口
+      closeViewPic();
+    }
+
+    // 关闭图片查看窗口
+    function closeViewPic()
+    {
+      $("#view").hide();
+      $("#mask").addClass("mask").fadeOut("slow");
+    }
+
+</script>
+
+<div class="main bc-white">
+    <div id="trade_info"></div>
+    
+    <div class="uinn">
+      <textarea class="share-textarea f-normal" id="share_text" placeholder="这一刻的心情..."></textarea>
+    </div>
+
+    <div class="uinn" style="clear: both; overflow:hidden;">
+      <div id="img-button" class="umar-t ub-img1 img-cover icon-postImg fl">
+          <input type="file" class="ub-img img-cover" style="opacity: 0;" onchange="addFile(this);" />
+      </div>
+    </div>
+    <div class="uinn c-gray">您最多可以上传4张图片，每张图片不超过3M</div>
+    <div style="margin-bottom: 0.4rem"></div>
+
+    <div class='banner-bottom'><button id="btn_publish" class="btn-red-b" onclick="publish();">发布</button></div>
+</div> 
+
+<div id="mask" class="mask" style="display: none;"></div>
+<div id="view" class="bc-white" style="display:none; position:fixed; top: 0.5rem; z-index:10001">
+  <div class="uinn">
+    <div class="ub ub-ac">
+      <div onclick="closeViewPic();"><img src="/image/jiantou_left.png" alt=""></div>
+      <div class="ub-f1"></div>
+      <div onclick="deletePic()" class="c-important">删除</div>
+    </div>
+    <div class="umar-t">
+      <img id="img_view" src=""/>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>

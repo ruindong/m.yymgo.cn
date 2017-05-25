@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>设置支付密码</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link type="text/css" rel="stylesheet" href="../css/common.css" />
+<link type="text/css" rel="stylesheet" href="../css/style.css" />
+<link type="text/css" rel="stylesheet" href="../css/style_3.css" />
+<link type="text/css" rel="stylesheet" href="../js/password/css/PasswordForge.css" />
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+
+<script type="text/javascript" src="../js/dm/DM_User_BaseInfo.js"></script>
+<script type="text/javascript" src="../js/dm/Post_PayPwd_Set.js"></script>
+<script type="text/javascript" src="../js/dm/Post_retrieve.js"></script>
+
+<script type="text/javascript" src="../js/base/VerifyCode.js"></script>
+<script type="text/javascript" src="../js/md5.js"></script>
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+
+<script type="text/javascript" src="../js/password/PasswordForge.js"></script>
+</head>
+
+<body onselectstart="return false">
+<script type="text/javascript">
+    var mobile;
+    var payPwd;
+    var code;
+
+    // 禁止右键
+    function stop(){
+        return false;
+    }
+    document.oncontextmenu=stop;
+
+    window.onload = function(){load();}
+
+    function load()
+    {
+      mobile = getMobile();
+
+      if(mobile)
+      {
+        $("#PhoneNum").val(mobile);
+        $("#PhoneNum").attr("readonly","readonly");
+      }
+    }
+
+    // 下一步：输入支付密码
+    function nextStep()
+    {
+        if(!validateretrieve())
+        {
+            return;
+        }
+
+        PasswordForge.setPassword(setPayPwd);      
+    }
+
+    // 设置支付密码
+    function setPayPwd(password)
+    {
+        payPwd = password;
+
+        // MD5加密
+        payPwd = payPwd.MD5(16);
+
+        var machine = new Post_PayPwd_Set();
+        var params = {
+          "payPwd": payPwd,
+          "code": code,
+          "mobile": mobile
+        }
+
+        DataCenter.post(machine, params, cbSetPayPwd);   
+    }
+    function cbSetPayPwd(result, machine)
+    {
+      if (result.code==0 ){
+        $toast("支付密码设置成功！");
+
+        //************************
+        // 插入一段恶心的代码，保存mobile，如果之前未绑定过手机，会将此手机号码绑定
+        saveMobile(mobile);
+        
+        window.setTimeout(function(){
+            goBack();
+        }, 2500);  
+      }else{
+        $toast(result.message);
+      }      
+    }   
+
+    // 校验
+    function validateretrieve(){
+        code = $("#Code").val();
+
+        if(!code){
+            $toast("请输入验证码！"); 
+            return false;
+        }  
+
+        return true;
+    }
+
+    // 发送验证码
+    function getVerifyCode(id)
+    {
+        mobile = $("#PhoneNum").val();
+        sendCode(mobile, id);
+    }
+  </script>  
+
+  <div class="main">
+     <div class="mm">
+         <div class='bai'> 
+            <input id="PhoneNum" class="mmSJ" type="text" name="userName" placeholder="手机号" />
+            <input id="Code" class="yzm" type="text" name="hqyzm" placeholder="验证码" />
+
+            <span><em id="send_btn" onclick="getVerifyCode(id);">获取验证码</em></span>
+            <span class="time60">重新发送（60）</span>
+         </div>
+         <p onclick="nextStep()" class="mmCZ">下一步</p>
+     </div>  
+  </div>
+
+  <script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>

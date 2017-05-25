@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>待晒单</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link href="../css/common.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="../css/watch.css">
+<link rel="stylesheet" type="text/css" href="../css/style.css">
+<link rel="stylesheet" type="text/css" href="../js/scroll/css/myScroll.css">
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/PopWin_Order.js"></script>
+<script type="text/javascript" src="../js/base/Public_Trade.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+
+<script type="text/javascript" src="../js/dm/DM_MyTradeListWaitShare.js"></script>
+<script type="text/javascript" src="../js/DateFormater.js"></script>
+
+<script type="text/javascript" src="../js/base/BounceList.js"></script>
+<script type="text/javascript" src="../js/scroll/QiScroll.js"></script>
+<script type="text/javascript" src="../js/iscroll-probe.js"></script>
+<script type="text/javascript" src="../js/Tocca.js"></script>
+</head>
+<body class="bg">
+<script type="text/javascript">
+    window.onload = function(){load();}
+
+    // 初始化加载数据
+    function load()
+    {
+        var dm_MyTradeList = new DM_MyTradeListWaitShare();
+
+        // 提取数据并更新
+        var blMgr = new BounceListMgr("main");         
+        blMgr.init("trade_list", dm_MyTradeList);
+    }
+
+    // ****************功能按钮
+    // 晒单
+    function addShare(tradeno)
+    {
+      var url = "add_share.html?tradeno=" + tradeno;
+      openWindow(url);      
+    }  
+</script>
+
+  <div id="main" class="main">
+    <div id="trade_list" class="bc-white"></div>
+  </div>
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

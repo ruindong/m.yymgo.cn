@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>个人资料</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link type="text/css" rel="stylesheet" href="../css/common.css"/>
+<link type="text/css" rel="stylesheet" href="../css/watch.css">
+<link type="text/css" rel="stylesheet" href="../css/style.css">
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Upload.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript" src="../js/dm/DM_User_BaseInfo.js"></script>
+<script type="text/javascript" src="../js/dm/Post_UpdateHeadImg.js"></script>
+</head>
+<body>
+<script>
+    // ****此处必须用window.onload，且必须用匿名方法
+    window.onload = function(){load();}   
+
+    function load()
+    {
+        getUserInfo();
+
+        // 回退时需要刷新
+        goBackRefresh(function(){
+            // 重新加载
+            getUserInfo();
+        });          
+    }
+
+    // 用户基本信息
+    function getUserInfo()
+    {
+        var dm_UserInfo = new DM_User_BaseInfo();
+        var params = {"userId": getUserId()};
+        dm_UserInfo.setParams(params);
+
+        // 提取数据并更新
+        DataCenter.getDataAnsyc("#", dm_UserInfo, cbGetUserInfo);         
+    }    
+    // 回调函数
+    function cbGetUserInfo(response, showId, machine)
+    { 
+        if(response)
+        {
+          var data = response.data;
+          if(data)
+          {
+            $("#headimg").attr("src", data.headImg);
+            $("#userId").html(data.id);
+            $("#account").html(data.account);
+            $("#nickName").html(data.nickName);
+          }
+        }
+    }
+
+    // 选择图片
+    function changeHead(inputComponent)
+    {
+        var file = inputComponent.files[0];
+        Upload.uploadFile(file, updateHeadImg);
+    }
+
+    // 修改头像
+    function updateHeadImg(picurls)
+    {
+      var machine = new Post_UpdateHeadImg();
+      var parms={
+        headImg: picurls,
+        userId: getUserId()
+      }
+
+      DataCenter.post(machine, parms, cbUpdateHeadImg)
+    }
+
+    // 回调函数
+    function cbUpdateHeadImg(result, machine)
+    {
+      if(result)
+      {
+        if(result.code == 0)
+        {
+          $toast("头像修改成功！");
+
+          $("#headimg").attr("src", result.data.headImg); //设置头像
+        }
+        else
+        {
+          $toast(result.message);
+        }
+      }
+    }
+</script>
+<div id="watch">
+      <div class="my-menu">
+        <div class="ub ub-ac headimg">
+          <div class="umar-l ub-f1">头像</div>
+          <div><img class="img-head" id="headimg" class='fr' src="" alt=""></div>
+          <div class="umar-l ub-img icon-arrow"></div>
+          <input type="file" onchange="changeHead(this);" class="select-face">
+        </div>
+
+        <div class="ub ub-ac" onclick="openWindow('my_tradelist.html')">
+          <div class="umar-l ub-f1">ID</div>
+          <div id="userId" class="c-gray"></div>
+        </div> 
+
+        <div class="ub ub-ac" onclick="openWindow('my_tradelist.html')">
+          <div class="umar-l ub-f1">账号</div>
+          <div id="account" class="c-gray"></div>
+        </div>  
+
+        <div class="ub ub-ac" onclick="openWindow('update_nickname.html')">
+          <div class="umar-l ub-f1">昵称</div>
+          <div id="nickName"></div>
+          <div class="umar-l ub-img icon-arrow"></div>
+        </div>                       
+      </div>
+</div>
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,51 @@
+// 查询商品的历史夺宝记录
+var DM_CommodityHistory = function(){
+	MessageMachine.call(this);
+
+	// url
+	this.url = url_host+"/comm/history/";
+
+	// template
+    this._template= 
+        '<li> '+
+        '  <div onclick="openTradeInfo({{tradeNo}})"> '+
+        '      <div class="ub uinn-b bd-b">'+
+        '        <div class="ub-f1">期号：{{tradeNo}}</div>'+
+        '        <div class="c-gray">揭晓：{{closeTime}}</div>'+
+        '      </div>'+
+        '      <div class="ub umar-ts"> '+
+        '        <div class="ub-img1 img-head" style="background-image:url({{targetUser.headImg}})"></div> '+
+        '        <div class="umar-l ub-f1"> '+
+        '         <p>获奖者：<span>{{targetUser.nickName}}</span></p> '+
+        '         <p>用户ID：{{targetUser.id}}</p> '+        
+        '         <p>参与IP：{{ip}}（城市：{{city}}）</p>'+   
+        '         <p>幸运号码：{{targetCode}}</p> '+
+        '         <p>本期参与：<span>{{orderCount}}</span>人次</p> '+
+        '        </div> '+
+        '      </div> '+
+        '  </div> '+ 
+        '</li>';
+
+	// set Render
+	this.setRender(this._template);
+
+	
+	// 数据格式转换
+	this.transfer = function(data){
+		if (data) {
+			//data.closeTime = getSmpFormatDateByLong(data.closeTime);
+		}
+		
+		return data;
+	}
+	
+	
+	// 测试数据
+	this.getTestData = function(){
+		var response = '{"code":0,"message":"success","version":"1.1","data":'+
+		  '[{"tradeNo":13421234,"commodityId":234324324,"coverImgUrl":"/ssssssss","ecoupon":234324324,"totalCount":99,"remainCount":6,"status":"trading","startTime":null,"closeTime":null,"targetUser":null}]'+
+	      '}';
+
+		return JSON.parse(response);
+	}
+}

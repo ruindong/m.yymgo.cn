@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+<link type="text/css" rel="stylesheet" href="../css/common.css"/>
+<link type="text/css" rel="stylesheet" href="../css/style.css"/>
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+
+<title>微信登录</title>
+</head>
+
+<body>
+<script type="text/javascript">  
+    var userId;
+    var token;
+    var expiresTime;
+    var errcode;
+
+    // ***必须用window.onload，匿名函数
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+      // 获取请求参数
+      userId = getQueryString("userId");
+      token = getQueryString("token");
+      expiresTime = getQueryString("expiresTime");            
+      errcode = getQueryString("errcode");      
+      $toast("登录信息：" + userId  + "-" + expiresTime + "-" + token);         
+
+      if(errcode)
+      {
+        var html = '<div class="f-big2">微信授权失败</div><div class="umar-t">' + errcode + '</div>';
+        $$("message").innerHtml = html;        
+      }    
+      else
+      {
+        // 本地存储
+        var signInfo = new Object();
+        signInfo.userId = userId;
+        signInfo.token = token;
+        signInfo.expiresTime = expiresTime;
+
+        saveLocalAccount(signInfo);
+
+        // 重定向到目标页面
+        location.replace(getBackUrl());
+      }
+    }  
+</script>
+
+  <div class="main">
+    <div class="ub-fh ub-pc" id="message">
+    </div>
+  </div>
+  <script src="../frame/frame.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

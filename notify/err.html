@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>消息提示</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link type="text/css" rel="stylesheet" href="../css/common.css"/>
+<link type="text/css" rel="stylesheet" href="../css/style.css"/>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    var message;
+
+    // ***必须用window.onload，匿名函数
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+      // 获取请求参数
+      message = getQueryString("message");
+
+      if(message == null)
+      {
+        $toast("参数丢失");
+        return;
+      }
+
+      $$("message").innerHTML = message;
+    }
+</script>
+
+  <div class="main">
+    <div class='czcd'><img src="../image/bg.gif" alt=""></div>
+    <p class='gxcg'>出错了</p>
+    <p class="jin_cg" id="message"></p>
+  </div>
+
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>

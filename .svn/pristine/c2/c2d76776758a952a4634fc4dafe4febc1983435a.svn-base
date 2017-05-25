@@ -1,0 +1,532 @@
+
+var url_weixin_signin = "http://api.yymgo.cn/wechat/code";
+var url_host = "http://api.yymgo.cn/";
+//var url_host = "http://121.41.106.239:8080/";
+
+var ua = navigator.userAgent;
+var isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1; //android终端
+var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+var isWeixin = ua.toLowerCase().match(/MicroMessenger/i)=="micromessenger"; // 是否微信
+
+// 尺寸设置
+window.scale=document.documentElement.clientWidth/3.75;
+document.getElementsByTagName("html")[0].style.fontSize=window.scale + "px";
+if( window.scale*3.75 > 1200){ document.getElementsByTagName("html")[0].style.fontSize=window.scale/4 + "px";}
+
+// 加载东方虹APP标识，并存储到session中
+loadAppTerminal();
+
+// 如果是apple，如果session中没有account对象，则从app中读取并存储到session中
+if((getAppTerminal() == "apple") && !getDFHAccount())
+{
+	setupWebViewJavascriptBridge(function(bridge) {
+		// 获取Account
+	    bridge.callHandler('app_verifytoken', {}, function(response) {
+		    saveDFHAccount(response);
+		});
+	})
+}
+
+/*****************************
+ * 与东方虹APP交互函数
+ *
+ *****************************/
+// 东方虹APP专属代码，识别是否东方虹APP内嵌
+function loadAppTerminal()
+{
+	var app_terminal = getQueryString("app_terminal");
+	
+	if(app_terminal)
+	{
+		setAppTerminal(app_terminal);
+	}
+}
+function setAppTerminal(app_terminal)
+{
+	var sessionStorage = window.sessionStorage;
+	setItem(sessionStorage, "AppTerminal", app_terminal);	
+}
+function getAppTerminal()
+{
+	var sessionStorage = window.sessionStorage;
+	return sessionStorage.getItem("AppTerminal");
+}
+
+//----------------------------------------
+// IOS处理
+// IOS，这段代码是固定的
+function setupWebViewJavascriptBridge(callback) {
+    if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
+    if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+    window.WVJBCallbacks = [callback];
+    var WVJBIframe = document.createElement('iframe');
+    WVJBIframe.style.display = 'none';
+    WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__';
+    document.documentElement.appendChild(WVJBIframe);
+    setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+}
+
+function saveDFHAccount(strAccount)
+{
+	var sessionStorage = window.sessionStorage;
+	try
+	{
+		// 直接存的文本
+		setItem(sessionStorage, "DFHAccount", strAccount);
+	}
+	catch(err)
+	{
+	}
+}
+function getDFHAccount()
+{
+	var sessionStorage = window.sessionStorage;
+	var str = sessionStorage.getItem("DFHAccount");
+	var dfhAccount;
+
+	try
+	{
+		dfhAccount = JSON.parse(str);
+	}
+	catch(err)
+	{
+	}
+
+	return dfhAccount;
+}
+function removeDFHAccount()
+{
+	var sessionStorage = window.sessionStorage;
+	sessionStorage.removeItem("DFHAccount");
+}
+
+// 获取IOS Account
+function getAccountFromIOS()
+{
+	// 直接从session中提取
+	return getDFHAccount();
+}
+
+
+// 获取安卓Account对象
+function getAccountFromAndroid()
+{
+	var dfhAccount = getDFHAccount();
+
+	// 如果session中不存在，尝试调用app接口获取
+	if(!dfhAccount && control && control != undefined)
+	{
+		try{
+			var response = control.app_verifytoken();
+
+			// 存文本
+		    saveDFHAccount(response);
+		    // 重新获取对象赋值
+		    dfhAccount = getDFHAccount();
+		}
+		catch(err)
+		{
+		}
+	}
+
+	return dfhAccount;
+}
+
+// 从客户端获取Account信息
+function getAccountFromApp()
+{
+	var objAccount;
+
+	var dfhMark = getAppTerminal();
+	if(dfhMark == "android")
+	{
+		objAccount = getAccountFromAndroid();
+	}
+	else if(dfhMark == "apple")
+	{
+        objAccount = getAccountFromIOS();
+	}
+
+	return objAccount;
+}
+
+//---------------------------------------------------
+function $$(id) {
+    return !id ? null : document.getElementById(id);
+}
+
+function $toast(s,t){
+	if(s == null)
+	{
+		return;
+	}
+	if(t == null || t < 2500)
+	{
+		t = 2500;
+	}
+
+	var html = 
+	'<div id="DFH_toast" class="needFadeIn ub ub-fh ub-pc" style="left:0;bottom:1rem;position:absolute;z-index:50;width:3.75rem">'+
+	'  <div style="background:#43C6DB;padding:0.1rem 0.3rem;margin:0.1rem;border-radius:.08rem;font-size:0.12rem;color:#fff;text-align:center;line-height:146%;">'+ s + '</div>'+
+	'</div>';	
+
+    $("body").append(html);    
+    setTimeout(function(){
+        $("#DFH_toast").remove();
+    },t);
+}
+// 带遮罩的，仅用于登录判断
+function $toastMask(s,t){
+	if(s == null)
+	{
+		return;
+	}
+	if(t == null || t < 2500)
+	{
+		t = 2500;
+	}
+
+	var html=
+	' <div id="mask" class="mask" style="display: none;"></div> '+
+	' <div id="DFH_toast_MASK" class="needFadeIn"> '+
+	'     <div class="uinn ub bd-b ub-ac">'+
+	'        <div class="ub-img img-cover" style="background-image:url(/image/tips2.gif)"></div>'+
+	'        <div class="ub-f1 umar-l">{Title}</div>'+
+	'     </div>'+
+	'     <div class="uinn c-center c-gray f-small">即将自动前往...</div>'+
+	' </div>';
+
+	html = html.replace('{Title}', s);
+	$("body").append(html);
+	$("#mask").addClass("mask").fadeIn("slow");
+	$("#DFH_toast_MASK").show();
+
+    setTimeout(function(){
+        $("#mask").hide();    	
+        $("#DFH_toast_MASK").hide();
+    },t);      
+}
+
+// 获取页面请求参数
+function getQueryString(name) { 
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+    var r = window.location.search.substr(1).match(reg); 
+    if (r != null) return decodeURI(r[2]); return null; 
+}
+
+// 打开窗口
+function openWindow(url)
+{
+    window.open(encodeURI(encodeURI(url)),'_self');	
+}
+
+// 返回上一页
+function goBack()
+{
+    history.back(-1);
+}
+
+// 存储变量，有封装提示
+function setItem(storage, key, value)
+{
+	if(storage == null)
+	{
+		return false;
+	}
+
+    try
+    {
+    	storage.setItem(key, value);
+    	return true;
+    }
+    catch(err)
+    {
+    	openWindow("/err/no_cache.html");
+    }
+
+    return false;
+}
+
+// 本地存储
+// 是否登录
+function isSingIn(account)
+{
+	var storage = window.localStorage ;
+	var account = storage.getItem("userId");
+	if(account)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+// 存储登录账号
+function saveLocalAccount(userInfo)
+{
+	var storage = window.localStorage;
+	if(setItem(storage, "userId", userInfo.userId))
+	{
+	    setItem(storage, "token", userInfo.token);
+	    setItem(storage, "expiresTime", userInfo.expiresTime);		
+	}
+}
+
+// 是否登录
+function isSignIn()
+{
+	// 东方虹APP判断
+	var obj = getAccountFromApp();
+	if(obj)
+	{
+		return true;
+	}
+
+	try{
+	    var storage = window.localStorage;
+	    var userId = storage.getItem("userId");	
+	    var token = storage.getItem("token");
+	    var now = new Date(); // 当前时间
+
+	    if(!userId || !token || (token < now.getTime()))
+	    {
+	    	return false;
+	    }	    
+	    else
+	    {
+	    	return true;
+	    }
+	}
+	catch(err)
+	{
+		return false;
+	}	
+}
+// 获取用户ID
+function getUserId()
+{
+	// 先从APP获取
+	var obj = getAccountFromApp();
+	if(obj)
+	{
+		return obj.UserId;
+	}
+
+	try{
+	    var storage = window.localStorage;
+	    var userId = storage.getItem("userId");	
+	    var token = storage.getItem("token");
+	    var now = new Date(); // 当前
+
+	    if(!userId || !token || (token < now.getTime()))
+	    {
+	    	if(!userId)
+	    	{
+	            $toastMask("请先登录！");	    		
+	    	}
+	    	else
+	    	{
+	            $toastMask("身份信息过期，请重新登录！");
+	    	}
+
+	        window.setTimeout(function(){
+	            // 登录
+		    	login();
+	        }, 2500);
+	    }
+	    
+	    return userId;
+	}
+	catch(err)
+	{
+		return null;
+	}
+}
+// 获取token
+function getToken()
+{
+	var obj = getAccountFromApp();
+	if(obj)
+	{
+		return obj.Token;
+	}
+
+	try
+	{
+		var storage = window.localStorage;
+	    return storage.getItem("token");	
+	}
+	catch(err)
+	{
+		return null;
+	}
+}
+function removeUserId()
+{
+	try
+	{
+		var storage = window.localStorage;
+	    storage.removeItem("token");
+	    storage.removeItem("userId");	
+	    storage.removeItem("expiresTime");
+	}
+	catch(err)
+	{
+	}
+}
+
+function saveMobile(mobile)
+{
+	if(mobile)
+	{
+		var storage = window.localStorage;		
+		setItem(storage, "mobile", mobile)
+	}
+	else
+	{
+		removeMobile();
+	}
+}
+
+function removeMobile()
+{
+	try
+	{
+	    storage.removeItem("mobile");			
+	}
+	catch(err)
+	{
+	}
+}
+
+
+// 获取Mobile
+function getMobile()
+{
+	try
+	{
+		var storage = window.localStorage;
+	    return storage.getItem("mobile");	
+	}
+	catch(err)
+	{
+		return null;
+	}
+}
+
+// 支付订单对象
+function saveOrderInfo(orderInfo)
+{
+	var sessionStorage = window.sessionStorage;
+	var str = JSON.stringify(orderInfo);
+	setItem(sessionStorage, "OrderInfo", str);
+}
+
+function getOrderInfo()
+{
+	var sessionStorage = window.sessionStorage;
+	var str = sessionStorage.getItem("OrderInfo");
+	return JSON.parse(str);
+}
+function clearOrderInfo()
+{
+	var sessionStorage = window.sessionStorage;
+    sessionStorage.removeItem("OrderInfo");
+}
+
+// 登录backurl
+function saveBackUrl(backurl)
+{
+	var sessionStorage = window.sessionStorage;
+	setItem(sessionStorage, "BackUrl", backurl);
+}
+function getBackUrl()
+{
+	var sessionStorage = window.sessionStorage;
+	return sessionStorage.getItem("BackUrl");
+}
+function removeBackUrl()
+{
+	var sessionStorage = window.sessionStorage;
+    sessionStorage.removeItem("BackUrl");
+}
+
+// 手机号码校验
+function validatePhoneNum(PhoneNum) {
+    var reg = /^((13)|(14)|(15)|(17)|(18))\d{9}$/;
+    return reg.test(PhoneNum);
+}
+
+// 登录
+function login()
+{
+	var dfhMark = getAppTerminal();
+	// 东方虹安卓
+	if(dfhMark == "android")
+	{
+		try
+		{
+			removeDFHAccount(); // 清除缓存
+		    control.signIn();
+		}
+		catch(err)
+		{
+			$toast("请关闭该页面，登录后再试！");
+		}
+	}
+	// 东方虹IOS
+	else if(dfhMark == "apple")
+	{
+		try
+		{
+			setupWebViewJavascriptBridge(function(bridge) {
+			    removeDFHAccount(); // 清除缓存				
+				// 登录
+			    bridge.callHandler('app_signin', {}, function(response) {
+				});
+			})
+		}
+		catch(err)
+		{
+			$toast("请关闭该页面，登录后再试！");
+		}
+	}
+	// 其他
+	else
+	{
+		var backUrl = window.location.href;
+		saveBackUrl(backUrl);
+
+	    // 用replace藏匿当前页面，防止用户不登录回退，死循环
+		if(isWeixin)
+		{
+			location.replace(url_weixin_signin);				
+		}
+		else
+		{
+		    location.replace("/login/dl.html");	
+		}		
+	}
+}
+
+// 查看用户个人主页
+function openUserspace(userId)
+{
+	if(!userId)
+	{
+		return;
+	}
+
+	if(isSignIn())
+	{
+	    var myself = getUserId();
+	    if(myself == userId)
+	    {
+	    	return;
+	    }		
+	}
+
+	openWindow("/index/user_space.html?userId=" + userId);
+}

@@ -1,0 +1,111 @@
+function id(a){return document.getElementById(a)}
+function css(a){return document.getElementsByClassName(a)}
+function tag(a){return document.getElementsByTagName(a)}
+var storage = window.localStorage ;
+var r=true;
+var NickName=function(){//更新昵称
+	MessageMachine.call(this);
+	this.url=url_host+"user/update-name.json";
+}
+var Mobile=function(){//更新手机
+	MessageMachine.call(this);
+	this.url=url_host+"user/update-mobile.json";
+}
+var Info=function(){
+	MessageMachine.call(this);
+	this.url=url_host+"user/info.json";
+}
+var UserName=function(){//昵称
+	MessageMachine.call(this);
+	this.url=url_host+"user/info.json";
+}
+if(tag("title")[0].innerHTML=='个人资料'){
+	var user=new UserName;
+		userUrl=user.url;
+	var userid=getUserId();
+	var mymsg={
+			userId:userid
+			}
+		DataCenter.post(user,mymsg,mycallback);
+			function mycallback(result,machine){
+				var data=result.data;
+				id("userID").innerHTML=data.id;
+				id("moblie").innerHTML=data.mobile;
+				 id("headImg").src=data.headImg;
+				if(typeof result.data.nickName=='undefined'||typeof result.data.nickName=='null'){
+					id("name").innerText="用户"+getUserId();
+				}else{
+					id("name").innerText=result.data.nickName;
+				}
+				console.log(result.data.nickName);
+				console.log("ss")
+			}
+	id("moblie").innerText=storage.moblie;
+}else{
+	if(id("s")){//修改昵称 页面 >>个人中心 site:/my/xiugainicheng.html
+			var user=new UserName;
+		userUrl=user.url;
+		DataCenter.post(user,{userId:getUserId()},xx);
+			function xx(result,machine){
+				id("userName").value=result.data.nickName;
+			}
+		
+		$(document).on('click','#s',function(){ 
+			console.log("...")
+			var usernamevalue=id("userName");
+			var value=usernamevalue.value.length;
+			if(value>8){//输入验证
+				css("tishi")[0].style.display="block";
+				return;
+			}
+			css("tishi")[0].style.display="none";
+			var nickname=new NickName;//实例化nickname
+			var url=nickname.url;
+			var msg={
+				"nickName":usernamevalue.value
+			};
+			DataCenter.post(nickname,msg,callblock);
+			function callblock(result,machine){
+				if(result.message.indexOf("success")||result.message.indexOf("成功") ){
+					$toast("修改成功");
+					setTimeout(function(){
+						history.go(-2);
+						location.reload();
+					},400);
+				}else{
+					$toast("修改失败~");
+					setTimeout(function(){
+						window.location.replace("./gerenziliao.html");
+					},400);
+				}
+			}
+		});
+	}
+	/*挪至onload事件中，否则会出问题
+	if(id("txt14")){
+		var user=new UserName;
+		userUrl=user.url;
+		DataCenter.post(user,{userId:getUserId()},xx);
+			function xx(result,machine){
+				if(typeof result.data.nickName=='undefined'||typeof result.data.nickName=='null'){
+					id("txt14").innerText="用户"+getUserId();
+				}else{
+					id("txt14").innerText=result.data.nickName;
+					id("headimg").src=result.data.headImg;
+				}
+			}
+	}
+	*/
+}
+
+
+
+
+
+
+
+
+
+
+
+

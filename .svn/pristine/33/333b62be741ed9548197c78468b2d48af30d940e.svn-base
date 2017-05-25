@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>我的空间</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link href="../css/common.css" type="text/css" rel="stylesheet" />
+<link href="../css/watch.css" type="text/css" rel="stylesheet" />
+<link href="../css/style.css" type="text/css" rel="stylesheet" />
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript" src="../js/dm/DM_MyEcoupon.js"></script>
+<script type="text/javascript" src="../js/dm/DM_User_BaseInfo.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    // ****此处必须用window.onload，且必须用匿名方法
+    window.onload = function(){load();}
+
+    function load()
+    {
+        getUserInfo();
+        getMyEcoupon();
+
+        // 回退时需要刷新
+        goBackRefresh(function(){
+          // 重新加载
+          getUserInfo();
+          getMyEcoupon();
+        });           
+    }
+
+    // 用户基本信息
+    function getUserInfo()
+    {
+        var dm_UserInfo = new DM_User_BaseInfo();
+        var params = {"userId": getUserId()};
+        dm_UserInfo.setParams(params);
+
+        // 提取数据并更新
+        DataCenter.getDataAnsyc("#", dm_UserInfo, cbGetUserInfo);         
+    }    
+    // 回调函数
+    function cbGetUserInfo(response, showId, machine)
+    { 
+        if(response)
+        {
+          var data = response.data;
+          if(data)
+          {
+            $("#nickName").html(data.nickName);
+            $("#headimg").attr("src", data.headImg);
+
+            // mobile
+            if(data.mobile)
+            {
+              saveMobile(data.mobile);
+            }
+            else
+            {
+              removeMobile();
+            }
+          }
+        }
+    }    
+
+    // 我的账户余额：本应合并到基本信息接口中，暂时分开吧
+    function getMyEcoupon()
+    {
+         // 查询账户余额
+        var dm_MyEcoupon = new DM_MyEcoupon();
+
+        // 提取数据并更新
+        DataCenter.getDataAnsyc("ecoupon", dm_MyEcoupon, cbMyEcoupon);         
+    }
+    // 回调函数
+    function cbMyEcoupon(response, showId, machine)
+    { 
+        if(response)
+        {
+          var data = response.data;
+          if(data)
+          {
+              ecoupon = data.ecoupon;
+
+              $$("ecoupon").innerHTML = ecoupon;         
+          }
+        }	
+    }
+</script>
+
+    <div id="watch">
+    	<div class="watch_top bc-white">
+        	<div class="user">
+            	<a href="my_baseinfo.html"><img id="headimg" style="border-radius:100%" class="user_l" src="../image/t.png"></a>
+              <div class="user_r">
+                    <p id='nickName' class="txt14"></p>
+              </div>
+          </div>
+      </div>
+
+      <div class="uinn bc-white bd-t">
+        <div class="ub ub-ac">
+          <div class="ub-img icon-recharge"></div>
+          <div class="umar-l ub-f1">账户余额：<em class="f-big c-important">￥</em><em id="ecoupon" class="f-big2 c-important"></em></div>
+          <div class="btn-recharge" onclick="openWindow('recharge.html')">充值</div>
+        </div>
+      </div>  
+
+      <div class="my-menu">
+        <div class="ub ub-ac" onclick="openWindow('my_tradelist.html')">
+          <div class="ub-img icon-trade"></div>
+          <div class="umar-l ub-f1">美购记录</div>
+          <div class="ub-img icon-arrow"></div>
+        </div>
+
+        <div class="ub ub-ac" onclick="openWindow('my_winedlist.html')">
+          <div class="ub-img icon-winned"></div>
+          <div class="umar-l ub-f1">中奖记录</div>
+          <div class="ub-img icon-arrow"></div>
+        </div>  
+
+        <div class="ub ub-ac" onclick="openWindow('account_detail.html')">
+          <div class="ub-img icon-account"></div>
+          <div class="umar-l ub-f1">账户明细</div>
+          <div class="ub-img icon-arrow"></div>
+        </div>  
+
+        <div class="ub ub-ac" onclick="openWindow('my_shaidan.html')">
+          <div class="ub-img icon-share"></div>
+          <div class="umar-l ub-f1">我的晒单</div>
+          <div class="ub-img icon-arrow"></div>
+        </div>  
+
+        <div class="ub ub-ac" onclick="openWindow('../login/bzyfk.html')">
+          <div class="ub-img icon-help"></div>
+          <div class="umar-l ub-f1">帮助与反馈</div>
+          <div class="ub-img icon-arrow"></div>
+        </div> 
+
+        <div class="ub ub-ac" onclick="openWindow('setup.html')">
+          <div class="ub-img icon-setup"></div>
+          <div class="umar-l ub-f1">设置</div>
+          <div class="ub-img icon-arrow"></div>
+        </div>                                      
+      </div>
+
+      <div class="my-bottom">
+          <p>敬请关注公众号：东方虹美购</p>
+          <p class="umar-t">客服热线：400-0529-789</p>
+          <p>（工作时间：8:30-21:00）</p>
+      </div>       
+    </div>
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

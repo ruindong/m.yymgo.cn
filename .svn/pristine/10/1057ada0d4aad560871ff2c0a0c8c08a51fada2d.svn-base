@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>参与美购</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+
+<script type="text/javascript" src="../js/dm/DM_PayByEcoupon.js"></script>
+
+</head>
+<body class="bc-white">
+<script type="text/javascript">
+    // ***必须用window.onload，匿名函数
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+      var orderId = getQueryString("orderId");
+
+      if(!orderId)
+      {
+        $toast("参数丢失");
+        return;
+      }        
+
+      var dm_PayByEcoupon = new DM_PayByEcoupon();
+
+      var params = {
+        "orderId": orderId,
+        "user": getUserId(),
+        "req_token": getToken()
+      };
+
+      dm_PayByEcoupon.setParams(params);      
+
+      // 提取数据并更新
+      DataCenter.getDataAnsyc("pay_result", dm_PayByEcoupon, cbResult);
+    }
+
+    // 回调，拦截处理返回错误的显示
+    function cbResult(response, showId, machine)
+    {
+        var data = response.data;
+        if(response.code == 0)
+        {
+            DataCenter.afterSuccess(response, showId, machine);
+        }
+        else
+        {
+            $("#err").removeClass("uhide");
+            $("#message").html(response.message);
+        }
+
+        // 倒计时返回
+        $("#sec").removeClass("uhide");
+        timer();        
+    }    
+
+
+    // 5秒后返回
+    var time = 5;
+    function timer() {
+        if (time >= 0) {
+          $("#sec em").html(time);
+          time--;
+          setTimeout("timer()", 1000);
+        } else {
+          closeMe();
+        }
+    }    
+
+    function closeMe()
+    {
+        var backUrl = getBackUrl();
+        removeBackUrl();
+
+        if(!backUrl)
+        {
+          backUrl = "/index.html";
+        }
+
+        //location.href = backUrl;
+        // 该页面消失，不回退
+        location.replace(backUrl);
+    }    
+</script>
+
+  <div class="main bc-white">
+    <div class="c-gray umar-b bc-dark uhide uinn" id="sec"><span onclick="closeMe()" class="c-link">关闭该页</span>，<em>5</em>秒后自动跳转...</div>
+
+    <div id="err" class="uhide">
+        <div class="kong"><img src="/image/failed.jpg" alt="" /></div>
+        <div class="umar-t c-center c-important" id="message"></div>
+    </div>
+
+    <div id="pay_result"></div>
+  </div>
+</body>
+</html>

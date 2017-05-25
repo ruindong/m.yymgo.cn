@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>不支持缓存</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link type="text/css" rel="stylesheet" href="../css/common.css"/>
+<link type="text/css" rel="stylesheet" href="../css/style.css"/>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+</head>
+<body class="">
+  <div class="main">
+    <div class='czcd'><img src="../image/bg.gif" alt=""></div>
+    <p class='gxcg'>您的浏览器不支持本地存储</p>
+    <p class="jin_cg">本系统无法在“无痕浏览”状态下使用，请关闭您的“无痕浏览”功能！</p>
+  </div>
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>

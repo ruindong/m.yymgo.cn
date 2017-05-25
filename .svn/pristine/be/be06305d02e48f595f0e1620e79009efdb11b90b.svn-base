@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>个人资料</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link href="../css/common.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/watch.css">
+<link rel="stylesheet" href="../css/headImages.css">
+<script type="text/javascript" src="http://static.dfhon.cn/js/jquery.1.8.3.min.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<style>
+	#pz{
+		position:relative;
+		height:2em;
+		margin-left:-150%;
+		width:300%;
+		background:rgba(255,0,0,0);
+		z-index:10;
+		display:block;
+	}
+	.pzfont{
+		position:absolute;
+		left:50%;
+		-webkit-transform: translateX(-50%);
+		-moz-transform: translateX(-50%);
+		-o-transform: translateX(-50%);
+		-ms-transform: translateX(-50%);
+		transform: translateX(-50%);
+	}
+</style>
+</head>
+<body>
+	
+    <div id="watch">
+        <div class='geren'>
+			<div id='touxiang' class='chongzhi2'>
+				<p style="position: relative"><em class='fl'>头像</em>
+					<b class='fr'></b>
+					<img style="border-radius:100%;" id="headImg" class='fr' src="" alt="">
+				</p>
+				<!--选择图片上传修改头像-->
+				<input type="file" onchange="changeHead(this);" class="select-face">
+			</div>
+			<a href="#" class='chongzhi3'><p><em class='fl'>ID</em><em class='fr haoma' id="userID"></em></p></a>
+            <a href="#" class='chongzhi4'><p><em class='fl'>账号</em><em class='fr haoma' id="moblie"></em></p></a>
+            <a href="xiugainicheng.html" class='chongzhi5'><p><em class='fl'>昵称</em><b class='fr'></b><em class='fr haoma1' id="name">待补全</em></p></a> 
+        </div>
+    </div>
+	<DIV id="upload" class="upload" style="display:none">
+		<div class="site">
+			<div id="container">
+				<div class='btn'>
+					 <span><a class="pzfont" onclick="pz">拍照</a><input id="pz" type="file" accept="image/*"></span>
+					 <p id="selectfiles" href="javascript:void(0);"> 从相册选择</p>
+				</div>
+				<p id="cancel" href="javascript:void(0);" style="margin-top:10px;" class='btn'>取消</p>
+			</div>
+		</div>
+	</DIV>
+	<DIV id="ts" class="ts" style="display:none">
+		<div class="title">
+			头像上传
+		</div>
+		<div id="ossfile">你的浏览器不支持flash,Silverlight或者HTML5！</div>
+			<img id="yl" class="yl" src="">
+		<div class="cz" id="cz" style="display:none">
+			<button id="postfiles" href="javascript:void(0);">确定</button>
+			<button id="cancel2" href="javascript:void(0);">取消</button>
+		</div>
+	</DIV>
+<script src="../js/user/setup.js"></script>
+<script type="text/javascript" src="../headimg/lib/crypto1/crypto/crypto.js"></script>
+<script type="text/javascript" src="../headimg/lib/crypto1/hmac/hmac.js"></script>
+<script type="text/javascript" src="../headimg/lib/crypto1/sha1/sha1.js"></script>
+<!--<script type="text/javascript" src="../headimg/lib/base64.js"></script>-->
+<!--<script type="text/javascript" src="../headimg/lib/plupload-2.1.2/js/plupload.full.min.js"></script>-->
+<!--<script type="text/javascript" src="../headimg/upload.js"></script>-->
+<script>
+	//修改头像修改不一致问题 -lyd -2016-10-20
+	var token = localStorage.token;//获取token的值
+	console.log(token);
+	function changeHead(file){
+		uploadFile(file.files[0]);
+	}
+	function uploadFile(file){
+		var url = 'http://api.dfhon.cn/V3/UploadFile.json?action=UploadFile';//图片存放路径
+		var xhr = new XMLHttpRequest();
+		var fd = new FormData();
+		xhr.open("POST", url, true);
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState == 4 && xhr.status == 200) {
+				var response =xhr.responseText;
+				var resJson =JSON.parse(response);//json转字符串
+				var picurls=resJson.Data[0].picurls;//返回图片存放位置的图片地址
+				console.log(picurls);
+				$.ajax({
+					type: "post",
+					url: "http://api.yymgo.cn/user/updateHeadImg.json?headImg="+picurls+"&userId=183&req_token="+token,
+					dataType: 'json',
+					success: function (result) {
+						$("#headImg").attr("src",picurls);//设置头像
+						console.log(result);
+					},
+					error: function () {
+
+					}
+				});
+			}
+		};
+		fd.append("upload_file", file);
+		xhr.send(fd);
+
+	}
+//	待删除
+	/*(function(){
+		up();
+	// up("2");//第二次点击				
+		up('3');//拍照
+
+		var url='http://static.yymgo.cn/imagefiles/userhead/'+getUserId()+'.jpg';
+		document.getElementById("headImg").src=url;
+		$('#headImg').error(function(){
+			$(this).attr('src',"http://static.yymgo.cn/imagefiles/userhead/8.jpg");
+		});
+		$("#touxiang").click(function(){
+			$("#upload").css("display","block");
+		});
+		$("#cancel").click(function(){
+			$("#upload").css("display","none");
+		});
+		$("#cancel2").click(function(){
+			window.location.reload();
+		});
+		$("#selectfiles").click(function(){
+			$("#upload").css("display","none");
+		});
+		
+	})();*/
+
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

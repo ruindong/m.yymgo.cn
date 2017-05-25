@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>查看物流信息</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/dm/DM_MyWinnedTradeInfo.js"></script>
+<script type="text/javascript" src="../js/dm/DM_MyWinnedAttr.js"></script>
+
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    var tradeno;
+
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+      // 获取请求参数
+      tradeno = getQueryString("tradeno");
+
+      if(tradeno == null)
+      {
+        $toast("参数丢失");
+        return;
+      }
+
+      // 加载中奖商品信息
+      loadWinnedTradeInfo(tradeno);
+
+      // 加载中奖商品附加信息
+      loadWinnedAttr(tradeno);
+    }
+
+    // -----加载中奖商品附加信息
+    function loadWinnedAttr(tradeno)
+    {
+      var dm_MyWinnedAttr = new DM_MyWinnedAttr();
+      var url = dm_MyWinnedAttr.url;
+      url += tradeno + ".json";
+
+      dm_MyWinnedAttr.setUrl(url);
+
+      // 提取数据并更新
+      DataCenter.getDataAnsyc("none", dm_MyWinnedAttr, cbWinnedAttr);
+    }
+    function cbWinnedAttr(response, showId, machine)
+    {
+      var data = response.data;
+      if(data)
+      {
+        var logistics = data.logistics;
+        if(!logistics)
+        {
+          logistics = "暂无物流信息，请耐心等候...";
+        }
+        
+        // 物流信息回填
+        $("#logistics").html(logistics);
+      }
+    }   
+
+    // -----加载中奖商品信息
+    function loadWinnedTradeInfo(tradeno)
+    {
+      var dm_tradeInfo = new DM_MyWinnedTradeInfo();
+      var url = dm_tradeInfo.url;
+      url += tradeno + ".json";
+
+      dm_tradeInfo.setUrl(url);
+
+      // 提取数据并更新
+      DataCenter.getDataAnsyc("trade_info", dm_tradeInfo);
+    }
+</script>    	
+
+<div class="main">
+    <div id="trade_info"></div>
+
+    <div class="umar-t uinn bc-white">
+        <div>您中奖商品的物流信息</div>
+        <div id="logistics" class="uinn bc-gray f-small"></div>
+        <div class="umar-t uinn-t c-gray f-small bd-t">
+            <p>提示：请查询快递单号了解物流详情</p>
+        </div>    
+    </div>
+</div>
+
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>佣金报表</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../css/watch.css"/>
+<link rel="stylesheet" type="text/css" href="../js/popup/css/popup.css" />
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template-native.js"></script> 
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/popup/Popup.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    var realName;
+
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load()
+    {
+    }
+</script>
+
+  <div class="main">
+    <div class="ub uinn bc-white c-center">
+      <div class="umw-33">
+        <div class="bd-r">
+          <div>今日收益</div>
+          <div class="umar-ts">￥1,000</div>
+        </div>  
+      </div>
+      <div class="umw-33">
+        <div class="">
+          <div>本周累计</div>
+          <div class="umar-ts">￥1,000</div>
+        </div>
+      </div>
+      <div class="umw-33">
+        <div class="bd-l">
+          <div>本月累计</div>
+          <div class="umar-ts">￥1,000</div>
+        </div>          
+      </div>              
+    </div> 
+
+    <div class="umar-t uinn bc-white">
+      <div class="ub">
+        <div>今天</div>
+        <div class="umar-l">今天</div>    
+        <div class="umar-l ub-f1">前天</div>                
+        <div class="umar-l">选择一天</div>
+      </div>
+
+      <div class="ub">
+        <div>本周</div>
+        <div class="umar-l">上周</div>    
+        <div class="umar-l ub-f1">上上周</div>                
+        <div class="umar-l">选择任意时间段</div>
+      </div>    
+
+      <div class="ub">
+        <div>本月</div>
+        <div class="umar-l">上月</div>
+        <div class="umar-l ub-f1">上上月</div>                
+        <div class="umar-l">选择任意时间段</div>
+      </div>
+
+      <div class="umar-t ub c-center">
+        <div class="umw-50">
+          <div class="uinn bd-r">
+             <div>￥30,000</div>
+             <div class="umar-ts c-gray f-small">一级下属会员贡献</div>
+          </div>   
+        </div>
+        <div class="umw-50">
+          <div class="uinn ">
+             <div>￥10,000</div>            
+             <div class="umar-ts c-gray f-small">二级下属会员贡献</div>
+          </div>            
+        </div>  
+      </div>
+    </div> 
+
+    <div class="umar-t uinn bc-white">
+      <div class="bd-b-dashed">
+        <div class="ub">
+          <div class="f-big2 ub-f1">￥6.00</div>
+          <div class="c-gray">2016-11-10 10:00</div>
+        </div>
+        <div class="c-gray">来自：王大帅(ID:33901)</div>
+      </div> 
+      <div class="bd-b-dashed">
+        <div class="ub">
+          <div class="f-big2 ub-f1">￥6.00</div>
+          <div class="c-gray">2016-11-10 10:00</div>
+        </div>
+        <div class="c-gray">来自：王二帅(ID:33911) ——> 王大帅(ID:33901)</div>
+      </div>       
+    </div  
+  </div>  
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

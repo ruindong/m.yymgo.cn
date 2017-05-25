@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>评价晒单</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/watch.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript" src="../js/dm/DM_MyWinnedTradeInfo.js"></script>
+<script type="text/javascript" src="../js/dm/Post_Share.js"></script>
+
+<script type="text/javascript" src="/headimg/lib/crypto1/crypto/crypto.js"></script>
+<script type="text/javascript" src="/headimg/lib/crypto1/hmac/hmac.js"></script>
+<script type="text/javascript" src="/headimg/lib/crypto1/sha1/sha1.js"></script>
+<script type="text/javascript" src="/headimg/lib/base64.js"></script>
+<script type="text/javascript" src="/headimg/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script type="text/javascript" src="/headimg/upload.js" id="upload" ></script>
+
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    var tradeno;
+    var commId;
+
+    var shareText; // 晒单文本
+
+    $(window).load = load(); 
+
+    // 初始化加载数据
+    function load(){
+      // 获取请求参数
+      tradeno = getQueryString("tradeno");
+
+      if(tradeno == null)
+      {
+        $toast("参数丢失");
+        return;
+      }
+
+      // 加载中奖商品信息
+      loadWinnedTradeInfo(tradeno);
+    }
+
+    // -----加载中奖商品信息
+    function loadWinnedTradeInfo(tradeno)
+    {
+      var dm_tradeInfo = new DM_MyWinnedTradeInfo();
+      var url = dm_tradeInfo.url;
+      url += tradeno + ".json";
+
+      dm_tradeInfo.setUrl(url);
+
+      // 提取数据并更新
+      DataCenter.getDataAnsyc("trade_info", dm_tradeInfo, cbTradeInfo);
+    }
+    function cbTradeInfo(response, showId, machine)
+    {
+      DataCenter.afterSuccess(response, showId, machine);
+
+      if(response && response.data)
+      {
+        commId = response.data.commodity.id;
+      }
+    }
+
+    //-----以下晒单功能
+    // 晒单
+    function share()
+    {
+      if(!isValidate())
+      {
+        return;
+      }
+
+      var machine = new Post_Share();
+      var parms={
+        tradeno: tradeno,//期号
+        commodity_model_id: commId,//商品型号
+        share_text: shareText,
+        image_urls: image.join(",")
+      }
+
+      // 禁止重发
+      $('#btn_publish').attr("disabled", true).html("正在提交...");
+      DataCenter.post(machine, parms, cbShare)
+    }
+
+    // 回调函数
+    function cbShare(result, machine)
+    {
+      if(result)
+      {
+        if(result.code == 0 )
+        {
+          $toast("晒单成功！");
+
+          window.setTimeout(function(){
+            goBack();
+          }, 1000); 
+        }
+        else
+        {
+          $toast(result.message);
+        }
+      }
+
+      // 按钮使能
+      $('#btn_publish').attr("disabled", false).html("发布");
+    }
+
+    // 合法性检查
+    function isValidate()
+    {
+      shareText = $.trim($("#share_text").val());
+
+      if(shareText.length < 5){
+        $toast("至少发5个字哦~");
+        return false;
+      }
+
+      if(image.length<=0){
+        $toast("至少发一张图哦~");
+        return false;
+      }
+      if(image.length>5){
+        $toast("最多上传5张图");
+        return false;
+      }    
+      
+      return true;
+    }  
+</script>    
+
+<div class="main">
+    <div id="trade_info">
+    </div>
+
+    <section id="W_write" data-hash="W_write" class="umar-t">
+        <form id="quanform">
+            <textarea name="content" id="share_text" maxlength="1024" placeholder="您此刻的心情..."></textarea>
+            <div id="section">
+			<div id="container">
+				<div id="ImgPreview" class="clearfix">
+					<label for="imgInput" id="plusImg" class="icon-postImg" style="position:relative">
+						<div class="imgsize" id="imgsize">0</div>
+						<div id="imgInput" name="imgUrls"></div><!--multiple="multiple"-->
+					</label>
+					<div id="images">
+
+					</div>
+				</div>
+			</div>
+            </div>
+        </form>
+    </section>
+
+    <div class='banner-bottom'><button id="btn_publish" class="btn-red-b" onclick="share();">发布</button></div>
+</div> 
+
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>

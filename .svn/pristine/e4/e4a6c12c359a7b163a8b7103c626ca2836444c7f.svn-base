@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>修改地址</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link href="../css/common.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/watch.css">
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+
+<script type="text/javascript" src="../js/dm/DM_AddressList.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript" src="../js/dm/post-update-address.js"></script>
+
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+<style>
+	
+	#cityOn{
+		display:inline-block;
+		width:60%;
+		text-align:right;
+		padding-right:0.5em;
+	}
+	
+	
+	
+	*{margin:0;padding:0;}
+html,body{-webkit-text-size-adjust: 100%;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);}/*取消移动端点击背景变化*/
+						#cityBox{
+							width:100%;
+							height:100%;
+							background:rgba(0,0,0,.7);
+							text-align:center;
+							color:#999;
+							cursor:pointer; 
+							-webkit-tap-highlight-color:transparent;
+							z-index:999;
+							position: absolute;
+							top: 0px;
+							left: 0;
+							background: rgba(0,0,0,.7);
+							display:none;
+						}
+						#cityBox	p,#cityBox span,#cityBox #l,#cityBox #r{
+								-webkit-user-select:none;
+						    -moz-user-select:none;
+						    -ms-user-select:none;
+						    user-select:none;	
+						-webkit-tap-highlight-color:transparent;
+							}
+						#cityBox p{
+								border-bottom:1px solid rgba(0,0,0,.04);
+						}
+						#cityBox #l,#cityBox #r{
+								display:inline-block;
+								width:46%;
+								padding:0.5em 0;
+								color:#444;
+						}
+						#cityBox #l{text-align:left;}
+						#cityBox #r{text-align:right;}
+						#cityBox #back{
+								display:block;
+								height:1.6em;
+								border-top:1px solid rgba(255,80,70,.5);
+								border-bottom:1px solid rgba(255,80,70,.5);
+								position:relative;
+								background:rgba(0,0,0,0);
+								z-index:1000;
+								top:1.7em;
+						}
+						#cityBox	#box3{
+								width:100%;/*有定位，请勿删除*/
+								height:50%;
+								background:#fff;
+								overflow:hidden;
+								position:absolute;
+								bottom:0;
+						}
+						#cityBox>div:after{
+								display:block;
+								clear:both;
+						}
+						#cityBox>div>div{
+								width:33.333%;
+								float:left;
+								display:block;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+								position:relative;
+								top:-1.7em;
+								z-index:999999999;
+						}
+							#cityBox #box3 span{
+								position:relative;
+								top:-0em;	
+								transition:top 300ms;
+						}
+						
+							#cityBox #box3>div{
+								position:relative;
+								line-height:1.7em;
+								padding:0;
+						}
+</style>
+</head>
+<body>
+  <div class='fadad'>
+    <div id="watch">
+        <div class='geren1'>
+            <span class='fl'>收货人</span><input id='ConsigneeName' class='fl' type="text" placeholder='收货人名字'>
+        </div>
+        <div class='geren1'>
+            <span class='fl'>联系电话</span><input id='phone' class='fl' type="text" placeholder='手机号码'>
+        </div>
+        <div class="demo geren1">
+          <span class='fl'>省市区</span><span id="cityOn" class="kbtn" style="float:right">请选择</span>
+        </div>
+        <div id="datePlugin">
+        </div>
+
+        <section id="W_write" data-hash="W_write">
+            <form id="quanform">
+                <textarea name="content" id="txtArea" placeholder="请填写详细地址，不少于5个字"></textarea>
+            </form>
+        </section>
+        <div class='baocun'>
+            <a class='bcxg' href="#">修改</a>
+        </div>
+        
+    </div>
+
+ </div>
+
+<script type="text/javascript" src="../frame/frame.js"></script>
+<script type="text/javascript" src="../frame/city.js"></script>
+<script type="text/javascript" src="../frame/cityChioce.js"></script>
+<script>
+	city('cityOn');
+	window.onload=function(){
+			document.getElementById("cityOn").addEventListener("touchstart",function(){
+				document.getElementById('cityBox').style.display='block'
+			});
+		}
+
+
+		$("#txtArea").on("touchstart",function(e){
+			e.stopPropagation();
+		});
+		$("#phone").on("touchstart",function(e){
+			e.stopPropagation();
+		});
+		$("#ConsigneeName").on("touchstart",function(e){
+			e.stopPropagation();
+		});
+		$(".bcxg").on("touchstart",function(e){
+			e.stopPropagation();
+		});
+	function id(){return document.getElementById(a)}
+   var storage=window.localStorage;
+//	var id=storage.getItem("addressId");//点击时候的id
+	var search=window.location.search;
+	var idName='id';
+	var idIndex=search.indexOf(idName);
+	var idTrue=idIndex!=-1?true:false;
+	var id;
+	if(idTrue){
+		id=search.substring(idIndex+idName.length+1,search.length)
+		console.log(id)
+	}else{
+		$toast("参数错误！");
+	}
+	
+	//console.log(id)
+	var idIndex=0;//要获取的对象位置
+	html={
+		"moblie":"",
+		"user":"",
+		"site":"",
+		"jd":"",
+		"id":""
+	};
+	//var adress=new Template();
+	//DataCenter.post(adress,{},function(result){
+	
+//   DM_AddressList
+	//(function(){
+	var adresslist=new DM_AddressList;
+	var poston=false;	
+	DataCenter.post(adresslist,{},function(result){	
+		//console.log(result.data[0].id)
+		for(var k in result.data){
+			if(result.data[k].id==id){
+				idIndex=k;//取得位置
+			//	console.log(idIndex);
+				//console.log(k)
+			}
+		}
+		//console.log(html.id)
+		var th=result.data[idIndex];
+		html.moblie=th.mobile;
+		html.user=th.consignee;
+		html.site=th.province+"-"+th.city+"-"+th.county;
+		html.jd=th.jiedao;
+		html.id=th.id;
+		
+		$("#ConsigneeName").val(html.user);
+		$("#phone").val(html.moblie);//这边mobile单词写反了
+		$("#cityOn").html(html.site);
+		$("#txtArea").val(html.jd);
+		
+		$("#ConsigneeName").on("touchstart",function(e){
+			e.stopPropagation();
+		});
+		$("#phone").on("touchstart",function(e){
+			e.stopPropagation();
+		});
+		$("#txtArea").on("touchstart",function(e){
+			e.stopPropagation();
+		});
+		function resultCallback(){
+			window.setTimeout(function(){
+				window.location.replace("address.html");
+			},400)
+		}
+		  document.querySelector(".bcxg").addEventListener("touchstart",post);
+		  function post(){
+			if(!poston){
+				poston=true;
+				 var ConsigneeName=$("#ConsigneeName").val();
+				  var phone=$("#phone").val();
+				  var beginTime=$("#cityOn").html();
+				  var txtArea=$("#txtArea").val();
+				 if(ConsigneeName.length<1){
+					  $toast("收货人姓名不能为空！");
+					  return;
+				  }
+				  if(phone.length<1){
+					  $toast("手机号码不能为空！");
+					  return;
+				  }
+				  if(!validatePhoneNum(phone)){
+					$toast("手机号格式不正确！");
+					return;
+				  }
+				  if(beginTime.length<1){
+					  $toast("请选择地址！");
+					  return;
+				  }
+				  if(txtArea.length<1){
+					  $toast("详细地址不能为空！");
+					  return;
+				  }
+				  if(txtArea.length<5){
+					  $toast("详细地址至少5个字符~");
+					  return;
+				  }
+				  
+               var updateAddress = new UpdateAddress();
+               var ssq=beginTime.split("-");
+			   if(typeof ssq[2]=='undefined'){
+					console.log( ssq[2] )
+			   }
+			   var updateOop={
+					"province":ssq[0],
+					"city":ssq[1],
+					"county":ssq[2],
+					"jiedao":txtArea,
+					"consignee":ConsigneeName,
+					"mobile":phone,
+					"id":parseInt(id)
+			   }
+			   //console.log( jQuery.ajax)
+				DataCenter.post(updateAddress,updateOop,function(result){
+					if(+result.code==0){
+						$toast('修改成功');
+						resultCallback();
+					}else{
+						$toast(result.message);
+					}
+				});
+			}
+          }
+		  
+	});
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

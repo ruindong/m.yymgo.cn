@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>支付管理</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link type="text/css" rel="stylesheet" href="../css/common.css" />
+<link type="text/css" rel="stylesheet" href="../css/style.css" />
+<link type="text/css" rel="stylesheet" href="../css/switch.css" />
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+
+<script type="text/javascript" src="../js/dm/Post_PayPwd_GetStatus.js"></script>
+
+<script type="text/javascript" src="../js/base/Filter.js"></script>
+
+</head>
+
+<body>
+<script type="text/javascript">
+    var iSwitch;
+    var hasPayPwd = false;
+    var mobile;
+
+    // ****此处必须用window.onload，且必须用匿名方法
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+      // 状态查询
+      getPayPwdStatus();
+
+      // 回退时需要刷新
+      goBackRefresh(function(){
+        // 重新加载
+        getPayPwdStatus();
+      });        
+    }
+
+    // 查询支付密码状态
+    function getPayPwdStatus()
+    {
+      var machine = new Post_PayPwd_GetStatus();
+      var params = {};
+
+      DataCenter.post(machine, params, cbGetPayPwdStatus);      
+    }
+    function cbGetPayPwdStatus(result, machine)
+    {
+      // 初始化之后再注入事件，以免启动时就执行
+      $("#ckbxStatus").change(change); 
+
+      if (result.code==0 ){
+        var data = result.data;
+        if(data.status == "on")
+        {
+          $("#ckbxStatus").attr("checked",true);
+        }
+        else
+        {
+          $("#ckbxStatus").attr("checked",false);
+        }
+
+        // 是否有支付密码
+        hasPayPwd = data.hasPayPwd=="true" ? true : false;
+
+        if((data.status == "on") && hasPayPwd)
+        {
+          $("#update_pwd").removeClass("uhide");
+        }
+        else
+        {
+          $("#update_pwd").addClass("uhide");          
+        }
+      }else{
+        $toast(result.message);
+      }      
+    }
+
+
+
+    // **************控件操作*************
+    // 开关变化
+    function change()
+    {
+      if($("#ckbxStatus").is(":checked"))
+      {
+        if(hasPayPwd)
+        {
+          openWindow("paypw_status_set.html?status=on");
+        }
+        else
+        {
+          $toast("请先设置支付密码！");
+          window.setTimeout(function(){
+              openWindow("paypw_set.html");
+          }, 2500);          
+        }
+      }
+      else
+      {
+        openWindow("paypw_status_set.html?status=off");
+      }
+    }
+  </script>  
+
+  <div class="main">
+      <div class="ub uinn ub-ac bc-white f-big">
+        <div class="ub-f1">支付密码</div>
+        <div class="">
+          <!--<input type="checkbox" id="switch" class="demo-default-1" />  -->
+          <label>
+            <input id="ckbxStatus" type="checkbox" class="ios-switch green" />
+            <div><div></div></div>
+          </label>   
+        </div>
+      </div>
+
+      <div class="uinn c-dark">开启支付密码，用于1圆美购余额支付验证</div>
+
+      <div class="umar-t uinn ub ub-ac bc-white f-big uhide" id="update_pwd" onclick="openWindow('paypw_set.html')">
+        <div class="ub-f1">修改支付密码</div>
+        <div class="ub-img img-icon1" style="background-image:url('../image/jiantou.png')"></div>       
+      </div>      
+  </div>
+
+  <script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>设置中奖商品规格</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../js/popup/css/popup.css" />
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/template.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/base/MessagePostWithoutRsp.js"></script>
+<script type="text/javascript" src="../js/dm/DM_MyWinnedTradeInfo.js"></script>
+<script type="text/javascript" src="../js/dm/DM_Address.js"></script>
+<script type="text/javascript" src="../js/dm/DM_MyWinnedAttr.js"></script>
+<script type="text/javascript" src="../js/dm/Post_SetSpecInfo.js"></script>
+<script type="text/javascript" src="../js/popup/Popup.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    var tradeno;
+    var specInfo;
+
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+      // 获取请求参数
+      tradeno = getQueryString("tradeno");
+
+      if(tradeno == null)
+      {
+        $toast("参数丢失");
+        return;
+      }
+
+      // 加载中奖商品信息
+      loadWinnedTradeInfo(tradeno);
+
+      // 加载中奖商品附加信息
+      loadWinnedAttr(tradeno);      
+    }
+
+    // -----加载中奖商品附加信息
+    function loadWinnedAttr(tradeno)
+    {
+      var dm_MyWinnedAttr = new DM_MyWinnedAttr();
+      var url = dm_MyWinnedAttr.url;
+      url += tradeno + ".json";
+
+      dm_MyWinnedAttr.setUrl(url);
+
+      // 提取数据并更新
+      DataCenter.getDataAnsyc("none", dm_MyWinnedAttr, cbWinnedAttr);
+    }
+    function cbWinnedAttr(response, showId, machine)
+    {
+      var data = response.data;
+      if(data)
+      {
+        var specDescription = data.specDescription;
+        $("#spce-description").html(specDescription);
+      }
+    }    
+
+    // -----加载中奖商品信息
+    function loadWinnedTradeInfo(tradeno)
+    {
+      var dm_tradeInfo = new DM_MyWinnedTradeInfo();
+      var url = dm_tradeInfo.url;
+      url += tradeno + ".json";
+
+      dm_tradeInfo.setUrl(url);
+
+      // 提取数据并更新
+      DataCenter.getDataAnsyc("trade_info", dm_tradeInfo);
+    }
+
+    // ************功能按钮**************
+    // 设置规格
+    function setSpecInfo(event)
+    {
+      specInfo = $.trim($("#spec_info").val());
+      if(specInfo == "")
+      {
+        // 删除确认
+        Popup.confirm(event, "您确定要按照默认规格发货？", setIt);
+      }
+      else
+      {
+        setIt();
+      }   
+    }
+    function setIt()
+    {
+      // 禁止重发
+      $('#submit').attr("disabled", true).html("正在提交...");
+
+      // 未设置，则填写为“默认规格” 
+      if(!specInfo)
+      {
+        specInfo = "默认规格";
+      }
+
+      var machine = new Post_SetSpecInfo(); 
+
+      var parms = {
+        "tradeno": tradeno,
+        "specInfo": specInfo
+      }
+
+      DataCenter.post(machine, parms, cbSetSpecInfo)
+    }
+
+
+    // 回调函数
+    function cbSetSpecInfo(result, machine)
+    {
+      if(result)
+      {
+        if(result.code == 0 )
+        {      
+          $toast("规格提交成功！");
+
+          setTimeout(function(){location.replace("show_address.html?tradeno=" + tradeno);}, 1500);
+        }
+        else
+        {
+          $toast(result.message);
+          $('#submit').attr("disabled", false).html("提交");          
+        }
+      }
+    }
+</script>
+
+<div class="main">
+    <div id="trade_info"></div>
+
+    <div class="umar-t uinn bc-white">
+      <div class="umar-t"><textarea id="spec_info" class="textarea-1 f-normal" placeholder='请先填写您的规格需求，不填将按照默认规格发货'></textarea></div>
+      <div class="umar-ts c-dark f-small">填写说明：<em id="spce-description"></em></div>
+
+      <div class="umar-tb uinn-t bd-t"><button id="submit" class="btn-red-b" ontouchstart="dfh_touch()" onclick="setSpecInfo(event)">提交</button></div>
+    </div>
+</div>
+<script type="text/javascript" src="../frame/frame.js"></script>
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

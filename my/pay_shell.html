@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>在线支付</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    var oldHash = 0; // hash标记
+    var oldHistoryPoint = 0;
+    var backUrl;
+
+    // 第三方支付iframe外壳，避免页面回退路径太长
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+       // 记录初始历史记录表示
+       oldHistoryPoint = history.length;
+
+       // 返回页面
+       backUrl = getBackUrl();
+
+       // 支付页面
+       var url = getPayUrl();
+       removePayUrl();
+
+
+       // 支付宝、微信支持iframe
+       //createFrame(url);
+
+       // 百度不支持iframe
+       location.href = url;
+    }
+
+    // 动态创建iframe，据说可以藏匿history记录
+    function createFrame(url)
+    {
+        var str = '\
+        <iframe id="payshell" name="payshell" width=100% height=100% frameborder=0 scrolling=auto>\
+        </iframe>\
+        ';      
+
+        $("body").append(str);
+
+        // 监控iframe的加载事件
+        $$("payshell").onload=function(){        
+              var dt = new Date().getTime();
+              var stateObj = { from: dt }; 
+              // 把所有返回内容都标记为backUrl，即使未捕获回退也不要紧
+              window.history.replaceState(stateObj, "", backUrl);   
+              // 加上锚点，会触发onhashchange事件
+              window.location.hash = new Date().getTime();
+
+              // 高度自适应
+              changeFrameHeight();
+        };     
+
+        $("#payshell").attr("src", url);                
+    }
+
+    // poostate，暂时没用
+    window.onpopstate = function (event) {
+    };  
+
+    // hash变化
+    window.onhashchange = function (event) {
+          var hash = location.hash;
+          hash = hash.replace("#", "");
+          var newHash = Number(hash);
+
+          // 当前时间比上次时间少了，表示回退操作
+          if(newHash < oldHash)
+          {
+              skip();
+          }
+          oldHash = newHash;
+    }
+
+    // 回退到主调页面
+    function skip()
+    {
+        var newHistoryPoint = history.length;
+        var skip = newHistoryPoint - oldHistoryPoint;
+        if(skip >= 1)
+        {
+            window.history.go(-skip); // 往前略过那些没用的页面
+            //alert("跳转失败：" + skip);
+            window.location.replace(backUrl); // 上一句不知啥原因会报错
+        }
+        else
+        {
+            window.location.replace(backUrl);
+        }      
+    }
+
+    // 高度自适应
+    function changeFrameHeight(){
+        var ifm = $$("payshell");
+        ifm.height = document.documentElement.clientHeight;
+
+    }
+    window.onresize=function(){  
+        changeFrameHeight();
+    }
+</script>
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>
+
+           

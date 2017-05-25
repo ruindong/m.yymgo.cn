@@ -1,0 +1,72 @@
+$(function(){
+    // 非东方虹APP内嵌，需要底部菜单
+    if(!getAppTerminal())
+    {
+      showMenu();
+    }
+
+    // 添加统计工具
+    appendStatistics();
+})
+
+// 显示底部菜单
+function showMenu()
+{
+    // 当前页面
+    var curPage = window.location.href;
+
+    // 去掉http://xxx.com开头
+    var pstr = ".*://.*?(/.*)";
+    var patt1 = new RegExp(pstr);
+    var ary = patt1.exec(curPage);
+    if(ary && ary.length == 2)
+    {
+      curPage = ary[1];
+    }
+
+    if((curPage == "/") || (curPage.indexOf("/?") == 0) || (curPage.indexOf("/index.html") == 0))
+    {
+        createMenu();
+        $(".b_1").addClass('cur');
+    }
+    else if(curPage.indexOf("/index/closed_tradelist.html") == 0)
+    {
+        createMenu();    
+        $(".b_2").addClass('cur'); 
+    }
+    else if(curPage.indexOf("/index/allshaidan.html") == 0)
+    {
+        createMenu();    
+        $(".b_3").addClass('cur'); 
+    }  
+    else if(curPage.indexOf("/my/my.html") == 0)
+    {
+        createMenu();    
+        $(".b_4").addClass('cur'); 
+    }
+}
+
+function createMenu()
+{
+    var html=
+       "<div class='index-foot' id='index-foot'>"
+      +"  <ul class='bd-b clear qing'>"
+      +"    <li class='b_1'><a href='/index.html'>首页</a></li>"
+      +"    <li class='b_2'><a href='/index/closed_tradelist.html'>揭晓</a></li>"
+      +"    <li class='b_3'><a href='/index/allshaidan.html'>晒单</a></li>"
+      +"    <li class='b_4'><a href='/my/my.html' id='MYlocation'>我的</a></li>"
+      +"  </ul>"
+      +"</div>";
+
+    $("footer").html(html);
+}
+
+// 统计工具
+function appendStatistics()
+{
+    var footer= document.getElementsByTagName("footer")[0];
+    var newScript= document.createElement("script");
+    newScript.type= "text/javascript";
+    newScript.src= "https://s95.cnzz.com/z_stat.php?id=1260788973&web_id=1260788973";
+    footer.appendChild(newScript);  
+}

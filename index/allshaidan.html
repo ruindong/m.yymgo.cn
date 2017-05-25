@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<title>晒单</title>
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../js/scroll/css/myScroll.css"/>
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+
+<script type="text/javascript" src="../js/DateFormater.js"></script>
+<script type="text/javascript" src="../js/template.js"></script>
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/dm/DM_AllShares.js"></script>
+
+<script type="text/javascript" src="../js/base/BounceList.js"></script>
+<script type="text/javascript" src="../js/scroll/QiScroll.js"></script>
+<script type="text/javascript" src="../js/iscroll-probe.js"></script>
+<script type="text/javascript" src="../js/Tocca.js"></script>
+</head>
+<body class="bg">
+<script type="text/javascript">
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load()
+    {
+      // 加载所有晒单记录
+      var dm_Shares = new DM_AllShares();
+
+
+      // 弹动数据列表  
+      var blMgr = new BounceListMgr("main");
+      blMgr.init("sclist_allshares", dm_Shares);
+    }
+
+    // 晒单详情
+    function openShareInfo(shareId)
+    {
+      lanchShareInfo(shareId);
+    }
+</script>    
+
+  <div id="main" class="main">
+    <div id="sclist_allshares">
+    </div>
+  </div>
+
+<script type="text/javascript" src="../frame/footer.js"></script>
+</body>
+
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>

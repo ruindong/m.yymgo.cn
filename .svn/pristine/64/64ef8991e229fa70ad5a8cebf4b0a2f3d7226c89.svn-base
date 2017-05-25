@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+<title>支付信息</title>
+<meta charset="utf-8">
+<meta name="viewport" content=" initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="../css/common.css"/>
+<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="../js/template.js"></script> 
+<script type="text/javascript" src="../js/base/Main.js"></script>
+<script type="text/javascript" src="../js/base/Public_Trade.js"></script>
+<script type="text/javascript" src="../js/base/DataCenter.js"></script>
+<script type="text/javascript" src="../js/base/JsonEx.js"></script>
+<script type="text/javascript" src="../js/base/MessageMachine.js"></script>
+<script type="text/javascript" src="../js/DateFormater.js"></script>
+
+<script type="text/javascript" src="../js/dm/DM_PayResult.js"></script>
+<script type="text/javascript" src="../js/dm/DM_PayResultRecharge.js"></script>
+
+</head>
+<body>
+<script type="text/javascript">
+    var type;
+    var id;
+    var code;
+    var message;
+    var payType;
+
+    // ***必须用window.onload，匿名函数
+    window.onload = function(){load();} 
+
+    // 初始化加载数据
+    function load(){
+      // 获取请求参数
+      type = getQueryString("type");      
+      id = getQueryString("id");      
+      code = getQueryString("code");      
+      message = getQueryString("message");
+      payType = getQueryString("payType");
+
+      // 服务端的一个bug
+      var _url = location.href;
+      if(_url.indexOf("type=order") >= 0)
+      {
+        type = "order";
+      }
+
+      if(id == null)
+      {
+        $toast("参数丢失");
+        return;
+      }
+
+      // 支付成功，请求查询支付结果
+      if(code == 0)
+      {   
+        if(type == "order")
+        {
+          payResult();
+        }
+        else
+        {
+          payRechargeResult();
+        }
+      }
+      else
+      {
+        $("#err").removeClass("uhide");
+        $$("message").innerHTML = message;      
+      }
+    }
+
+    // 支付订单状态查询
+    function payResult()
+    {
+      var dm_PayResult = new DM_PayResult();
+
+      var params = {
+        "orderId": id,
+        "payType": payType,
+        "user": getUserId()
+      };
+
+      dm_PayResult.setParams(params);          
+
+      // 提取数据并更新
+      DataCenter.getDataAnsyc("pay_result", dm_PayResult, cbResult);
+    }
+
+    // 充值状态查询
+    function payRechargeResult()
+    {
+      var dm_PayResultRecharge = new DM_PayResultRecharge();
+
+      var params = {
+        "rechargeId": id,
+        "payType": payType,        
+        "user": getUserId()
+      };
+
+      dm_PayResultRecharge.setParams(params);        
+
+      // 提取数据并更新
+      DataCenter.getDataAnsyc("rechard_result", dm_PayResultRecharge, cbResult);
+    }
+
+    // 回调，拦截处理返回错误的显示
+    function cbResult(response, showId, machine)
+    {
+        // 如果是易宝，且为dfhon APP内嵌版本，直接调用app接口处理
+        if(payType == "yibao")
+        {
+            var dfhMark = getAppTerminal();
+            if(dfhMark)
+            {
+              launchAPPPayResult(dfhMark, response);
+              return;
+            }
+        }
+
+        var data = response.data;
+
+        if(response.code == 0)
+        {
+            DataCenter.afterSuccess(response, showId, machine);
+            $("#paysuc").removeClass("uhide");
+            if(isWeixin)
+            {
+              $("#guide-wx").removeClass("uhide");
+            }
+            else
+            {
+              $("#guide-h5").removeClass("uhide");              
+            }
+        }
+        else
+        {
+            $("#err").removeClass("uhide");
+            $$("message").innerHTML = response.message;
+        }
+    }
+
+    // launch东方虹APP接口，控制权交给APP
+    function launchAPPPayResult(dfhMark, response)
+    {
+      var orderType = (type == "order" ? "ZF" : "CZ");   
+      var code = response.code;
+      var message = response.message;
+
+      var totalPrice;
+      var createTime;
+      var commName;
+      var tradeNo;
+      var count;      
+
+      if(code == 0)
+      {
+        var data = response.data;
+        totalPrice = data.totalPrice;
+        createTime = data.createTime;
+        commName = data.commName;
+        tradeNo = data.tradeNo;
+        count = data.count;  
+      }
+
+      if(dfhMark == "apple")
+      {
+          var params = {
+            "code": code,
+            "message": message,
+            "orderType": orderType,
+            "commName": commName,
+            "tradeNo": tradeNo,
+            "count": count,
+            "totalPrice": totalPrice
+          }
+          setupWebViewJavascriptBridge(function(bridge) {
+              bridge.callHandler('jumpPaySuccess', params, function(response) {
+              });
+          })
+      }
+      else if(dfhMark == "android")
+      {
+          try
+          {
+            control.app_verifytoken(code, message, orderType, commName, tradeNo, count, totalPrice);
+          }
+          catch(err)
+          {
+            $toast(err);
+          }
+      }      
+    }  
+
+    function closeMe()
+    {
+        // 该页面是iframe内嵌，需要调用pay_shell窗口中的方法返回
+        if(parent && (typeof parent.skip == 'function'))
+        {
+            parent.skip();
+        }
+        else
+        {
+            location.replace(getBackUrl());        
+        }
+    }
+</script>
+
+  <div class="main">
+    <div id="err" class="uinn uhide bc-white">
+        <div class="kong"><img src="/image/failed.jpg" alt="" /></div>
+        <div class="umar-t c-important c-center f-big" id="message"></div>
+        <div class="umar-t c-gray bd-t">如果参与美购失败，美购币将归还至您的账户余额中！</div> 
+        <div class="umar-tb ub ub-pc">
+          <div class="btn-red-2" onclick="location.replace('/my/my.html');">查看明细</div>
+          <div class="umar-l btn-red-2" onclick="location.replace('/index.html');">回到首页</div>
+        </div>
+    </div>
+
+    <div id="pay_result"></div>
+    <div id="rechard_result"></div>
+
+    <div class="umar-t uinn bc-white uhide" id="paysuc">
+      <div class="umar-tb bdt c-center f-big2 c-important">关注东方虹美购，回复“新手红包”有惊喜！</div>
+      <div id="guide-h5" class="uhide">
+        <div class="c-center">
+            <img src="/image/wexin_guide3.jpg" alt=""/>
+        </div>
+        
+        <div class="umar-ts c-dark">
+          <p>1）关注公众号：截屏保存到相册；打开微信扫一扫，点击右上角“相册”选择保存的二维码图片</p>
+          <p class="umar-ts">2）在公众号中回复：新手红包，有惊喜！</p>
+        </div>
+      </div>  
+      <div id="guide-wx" class="uhide">
+        <div class="c-center">    
+            <img src="/image/wexin_guide3.jpg" alt=""/>
+        </div>
+        <div class="umar-ts c-dark">
+          <p>1）关注公众号：长按识别上图二维码，中奖自动推送更方便！</p>
+          <p class="umar-ts">2）在公众号中回复：新手红包，有惊喜！</p>
+        </div>    
+      </div>
+    </div>   
+  </div>
+</body>
+<footer><script type="text/javascript" src="/frame/footer.js"></script></footer>
+</html>
